@@ -1,0 +1,61 @@
+{
+  "groups": [
+    {
+      "name": "app",
+      "type": "com.studentreport.config.AppProperties",
+      "sourceType": "com.studentreport.config.AppProperties"
+    },
+    {
+      "name": "app.jwt",
+      "type": "com.studentreport.config.AppProperties$Jwt",
+      "sourceType": "com.studentreport.config.AppProperties"
+    },
+    {
+      "name": "app.cors",
+      "type": "com.studentreport.config.AppProperties$Cors",
+      "sourceType": "com.studentreport.config.AppProperties"
+    },
+    {
+      "name": "app.seed",
+      "type": "com.studentreport.config.AppProperties$Seed",
+      "sourceType": "com.studentreport.config.AppProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secret key for HMAC-SHA signature of JWT access tokens."
+    },
+    {
+      "name": "app.jwt.expiration-ms",
+      "type": "java.lang.Long",
+      "description": "JWT expiration duration in milliseconds."
+    },
+    {
+      "name": "app.jwt.cookie-name",
+      "type": "java.lang.String",
+      "description": "Name of the HttpOnly authentication cookie."
+    },
+    {
+      "name": "app.jwt.cookie-secure",
+      "type": "java.lang.Boolean",
+      "description": "Whether the auth cookie should have the Secure flag enabled."
+    },
+    {
+      "name": "app.jwt.cookie-same-site",
+      "type": "java.lang.String",
+      "description": "SameSite policy for the authentication cookie (Lax, Strict, None)."
+    },
+    {
+      "name": "app.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Allowed CORS origins for the frontend clients."
+    },
+    {
+      "name": "app.seed.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether development sample data seeding is enabled on startup."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: student-report-backend
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://ep-placeholder.neon.tech/neondb?sslmode=require}
+    username: ${DATABASE_USERNAME:placeholder}
+    password: ${DATABASE_PASSWORD:placeholder}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: NeonHikariCP
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 25
+          order_inserts: true
+          order_updates: true
+    show-sql: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: "2"
+    locations: classpath:db/migration
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:student_report_system_super_secret_jwt_key_that_is_long_enough_2026}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+    cookie-name: student_report_token
+    cookie-secure: ${COOKIE_SECURE:false}
+    cookie-same-site: Lax
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
+  seed:
+    enabled: ${APP_SEED_ENABLED:false}
+
+logging:
+  level:
+    root: INFO
+    com.studentreport: DEBUG
+    org.springframework.security: INFO
+    org.flywaydb: INFO
