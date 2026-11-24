@@ -64,8 +64,25 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        configuration.setAllowedOrigins(origins);
+        java.util.List<String> originPatterns = new java.util.ArrayList<>();
+        
+        // Add default localhost and Vercel patterns
+        originPatterns.add("http://localhost:[*]");
+        originPatterns.add("http://127.0.0.1:[*]");
+        originPatterns.add("https://*.vercel.app");
+        originPatterns.add("https://student-management-system-smoky-alpha.vercel.app");
+        
+        // Add configured origins
+        if (allowedOrigins != null && !allowedOrigins.trim().isEmpty()) {
+            for (String origin : allowedOrigins.split(",")) {
+                String trimmed = origin.trim();
+                if (!trimmed.isEmpty() && !originPatterns.contains(trimmed)) {
+                    originPatterns.add(trimmed);
+                }
+            }
+        }
+        
+        configuration.setAllowedOriginPatterns(originPatterns);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin", "X-Correlation-ID"));
         configuration.setExposedHeaders(Arrays.asList("X-Correlation-ID", "X-Response-Time-Ms", "Set-Cookie"));
