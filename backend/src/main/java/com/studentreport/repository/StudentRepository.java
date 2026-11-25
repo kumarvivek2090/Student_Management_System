@@ -22,8 +22,13 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
            "JOIN FETCH s.user u " +
            "LEFT JOIN FETCH s.schoolClass c " +
            "LEFT JOIN FETCH s.section sec " +
-           "WHERE u.email = :email")
-    Optional<Student> findByUserEmailWithDetails(@Param("email") String email);
+           "WHERE LOWER(TRIM(u.email)) = LOWER(TRIM(:email))")
+    List<Student> findAllByUserEmailWithDetails(@Param("email") String email);
+
+    default Optional<Student> findByUserEmailWithDetails(String email) {
+        List<Student> list = findAllByUserEmailWithDetails(email);
+        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+    }
 
     @Query("SELECT s FROM Student s " +
            "JOIN FETCH s.user u " +
