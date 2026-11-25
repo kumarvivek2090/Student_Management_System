@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 import { Toaster } from 'react-hot-toast';
 import './styles/index.css';
 
@@ -15,9 +16,10 @@ export const queryClient = new QueryClient({
         if (error?.response?.status && [401, 403, 404].includes(error.response.status)) {
           return false;
         }
-        return failureCount < 2;
+        return failureCount < 1;
       },
-      staleTime: 30000, // 30 seconds default
+      staleTime: 60000, // 60 seconds cache for ultra-fast instant navigation
+      gcTime: 300000,
     },
   },
 });
@@ -26,37 +28,39 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
-          <App />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#FFFFFF',
-                color: '#292C24',
-                border: '1px solid #E6E4D9',
-                boxShadow: '0 4px 12px 0 rgba(41, 44, 36, 0.08)',
-                fontSize: '12px',
-                fontWeight: 500,
-                padding: '10px 14px',
-                borderRadius: '10px',
-              },
-              success: {
-                iconTheme: {
-                  primary: '#69744A',
-                  secondary: '#FFFFFF',
+        <ThemeProvider>
+          <AuthProvider>
+            <App />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3500,
+                style: {
+                  background: '#FFFFFF',
+                  color: '#242820',
+                  border: '1px solid #E3E1D6',
+                  boxShadow: '0 10px 25px -3px rgba(36, 40, 32, 0.1)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  padding: '10px 16px',
+                  borderRadius: '12px',
                 },
-              },
-              error: {
-                iconTheme: {
-                  primary: '#DC2626',
-                  secondary: '#FFFFFF',
+                success: {
+                  iconTheme: {
+                    primary: '#52613B',
+                    secondary: '#FFFFFF',
+                  },
                 },
-              },
-            }}
-          />
-        </AuthProvider>
+                error: {
+                  iconTheme: {
+                    primary: '#DC4545',
+                    secondary: '#FFFFFF',
+                  },
+                },
+              }}
+            />
+          </AuthProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>

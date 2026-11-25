@@ -82,6 +82,21 @@ public class UserService {
         logService.log(adminEmail, "PASSWORD_RESET", "Reset credentials for " + user.getEmail(), null, null);
     }
 
+    @Transactional
+    public EnterpriseDTO.UserSummaryDTO updateProfile(String email, String fullName, String phone) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + email));
+        if (fullName != null && !fullName.isBlank()) {
+            user.setFullName(fullName.trim());
+        }
+        if (phone != null) {
+            user.setPhone(phone.trim());
+        }
+        user = userRepository.save(user);
+        logService.log(email, "PROFILE_UPDATED", "Updated personal profile details", null, null);
+        return mapToDTO(user);
+    }
+
     private EnterpriseDTO.UserSummaryDTO mapToDTO(User u) {
         return EnterpriseDTO.UserSummaryDTO.builder()
                 .id(u.getId())

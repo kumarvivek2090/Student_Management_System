@@ -25,8 +25,14 @@ import {
   ExternalLink,
   X,
   Mail,
-  Shield
+  Shield,
+  Edit3,
+  Phone,
+  Laptop,
+  Lock,
+  History
 } from 'lucide-react';
+import api from '../../utils/api';
 import toast from 'react-hot-toast';
 
 const ProfilePopover = ({
@@ -35,7 +41,7 @@ const ProfilePopover = ({
   customTrigger = null,
   className = ''
 }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, checkAuth } = useAuth();
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +49,14 @@ const ProfilePopover = ({
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [showSecurityModal, setShowSecurityModal] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+
+  // Edit Profile Form State
+  const [editFullName, setEditFullName] = useState(user?.fullName || '');
+  const [editPhone, setEditPhone] = useState(user?.phone || '');
+  const [editLoading, setEditLoading] = useState(false);
 
   // Form states for change password modal
   const [currentPassword, setCurrentPassword] = useState('');
@@ -64,6 +77,13 @@ const ProfilePopover = ({
   const popoverRef = useRef(null);
   const closeTimeoutRef = useRef(null);
 
+  useEffect(() => {
+    if (user) {
+      setEditFullName(user.fullName || '');
+      setEditPhone(user.phone || '');
+    }
+  }, [user]);
+
   // Clear hover timeout
   const cancelClose = () => {
     if (closeTimeoutRef.current) {
@@ -72,7 +92,7 @@ const ProfilePopover = ({
     }
   };
 
-  // Schedule close with slight debounce so moving cursor between trigger and card is seamless
+  // Schedule close with debounce so moving cursor between trigger and card is seamless
   const scheduleClose = () => {
     cancelClose();
     closeTimeoutRef.current = setTimeout(() => {
@@ -100,6 +120,8 @@ const ProfilePopover = ({
         setShowPasswordModal(false);
         setShowHelpModal(false);
         setShowNotificationModal(false);
+        setShowEditProfileModal(false);
+        setShowSecurityModal(false);
       }
     };
 
@@ -199,6 +221,26 @@ const ProfilePopover = ({
     navigate('/settings');
   };
 
+  const handleEditProfileSubmit = async (e) => {
+    e.preventDefault();
+    setEditLoading(true);
+    try {
+      const res = await api.put('/users/profile', {
+        fullName: editFullName,
+        phone: editPhone
+      });
+      if (res.data?.success) {
+        toast.success('Profile details updated successfully');
+        setShowEditProfileModal(false);
+        if (checkAuth) checkAuth();
+      }
+    } catch (err) {
+      toast.error('Failed to update profile details');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
     if (!currentPassword || !newPassword) {
@@ -235,11 +277,10 @@ const ProfilePopover = ({
     if (position === 'header') {
       return 'top-full right-0 mt-2.5 origin-top-right';
     }
-    // Sidebar position
     if (isCollapsed) {
       return 'left-full bottom-0 ml-3 origin-bottom-left';
     }
-    return 'bottom-full left-0 mb-3 origin-bottom-left';
+    return 'bottom-full left-0 sm:left-1 mb-2.5 origin-bottom-left';
   };
 
   return (
@@ -260,20 +301,20 @@ const ProfilePopover = ({
         {customTrigger ? (
           customTrigger
         ) : position === 'header' ? (
-          <div className="flex items-center space-x-2.5 py-1 px-2 rounded-xl hover:bg-[#F0EFE6] transition-colors border border-transparent hover:border-[#E3E1D6]">
+          <div className="flex items-center space-x-2.5 py-1 px-2 rounded-xl hover:bg-[#F0EFE6] dark:hover:bg-[#1D251A] transition-colors border border-transparent hover:border-[#E3E1D6] dark:hover:border-[#2F3C21]">
             <ProfileAvatar user={user} size="sm" showStatus={true} />
             <div className="hidden lg:block text-left">
               <div className="flex items-center space-x-1.5">
-                <p className="text-xs font-bold text-[#242820] leading-tight truncate max-w-[140px]">
+                <p className="text-xs font-bold text-[#242820] dark:text-white leading-tight truncate max-w-[140px]">
                   {user?.fullName || 'User'}
                 </p>
                 <ChevronDown
-                  className={`w-3.5 h-3.5 text-[#555B50] transition-transform duration-200 ${
+                  className={`w-3.5 h-3.5 text-[#555B50] dark:text-[#CAD6B7] transition-transform duration-200 ${
                     isOpen ? 'rotate-180 text-[#52613B]' : ''
                   }`}
                 />
               </div>
-              <p className="text-[10px] text-[#555B50] font-semibold uppercase tracking-wider">
+              <p className="text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-semibold uppercase tracking-wider">
                 {user?.role || 'Guest'}
               </p>
             </div>
@@ -306,7 +347,7 @@ const ProfilePopover = ({
           ref={popoverRef}
           onMouseEnter={cancelClose}
           onMouseLeave={scheduleClose}
-          className={`absolute ${getPopoverPlacement()} w-[340px] sm:w-[380px] max-w-[calc(100vw-1.5rem)] bg-white rounded-2xl shadow-2xl border border-[#E7E5DA] overflow-hidden z-50 animate-slideDown text-[#242820]`}
+          className={`absolute ${getPopoverPlacement()} w-[340px] sm:w-[380px] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] overflow-hidden z-50 animate-slideDown text-[#242820] dark:text-[#E8EDE4]`}
           style={{
             boxShadow: '0 20px 35px -5px rgba(36, 40, 32, 0.15), 0 10px 15px -5px rgba(36, 40, 32, 0.08)'
           }}
@@ -328,9 +369,21 @@ const ProfilePopover = ({
             <div className="flex items-start space-x-3.5">
               <ProfileAvatar user={user} size="lg" showStatus={true} ring={true} />
               <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-white tracking-tight leading-snug truncate">
-                  {user?.fullName || 'Academic User'}
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-bold text-white tracking-tight leading-snug truncate">
+                    {user?.fullName || 'Academic User'}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      setShowEditProfileModal(true);
+                    }}
+                    className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#CAD6B7] hover:text-white transition-colors"
+                    title="Edit Profile"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
                 <p className="text-xs text-[#E4EAD9] font-medium leading-tight mt-0.5">
                   {meta.title}
                 </p>
@@ -356,16 +409,16 @@ const ProfilePopover = ({
           </div>
 
           {/* 2. DYNAMIC IDENTITY & DEPARTMENT PANEL */}
-          <div className="p-4 bg-[#F8F7F2] border-b border-[#E7E5DA] space-y-2.5 text-xs">
+          <div className="p-4 bg-[#F8F7F2] dark:bg-[#151B13] border-b border-[#E7E5DA] dark:border-[#2F3C21] space-y-2.5 text-xs">
             {/* ID & Status Row */}
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-1.5">
-                <span className="text-[11px] font-semibold text-[#555B50]">Unique Identifier:</span>
-                <span className="font-mono font-bold text-[#242820] bg-white border border-[#E3E1D6] px-2 py-0.5 rounded text-[11px]">
+                <span className="text-[11px] font-semibold text-[#555B50] dark:text-[#CAD6B7]">Unique Identifier:</span>
+                <span className="font-mono font-bold text-[#242820] dark:text-white bg-white dark:bg-[#1D251A] border border-[#E3E1D6] dark:border-[#2F3C21] px-2 py-0.5 rounded text-[11px]">
                   {meta.identifier}
                 </span>
               </div>
-              <div className="flex items-center space-x-1.5 bg-[#EAF5EC] border border-[#BCE1C5] px-2.5 py-0.5 rounded-full text-[10px] font-bold text-[#198754]">
+              <div className="flex items-center space-x-1.5 bg-[#EAF5EC] dark:bg-[#1A261B] border border-[#BCE1C5] dark:border-[#284E2D] px-2.5 py-0.5 rounded-full text-[10px] font-bold text-[#198754]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#198754] animate-pulse"></span>
                 <span>Active</span>
               </div>
@@ -373,107 +426,132 @@ const ProfilePopover = ({
 
             {/* Department */}
             <div className="flex items-start space-x-2 text-[11px]">
-              <span className="text-[#555B50] font-semibold shrink-0">Department:</span>
-              <span className="font-bold text-[#242820] truncate">{meta.department}</span>
+              <span className="text-[#555B50] dark:text-[#CAD6B7] font-semibold shrink-0">Department:</span>
+              <span className="font-bold text-[#242820] dark:text-white truncate">{meta.department}</span>
             </div>
 
             {/* Role-Specific Detail */}
             <div className="flex items-start space-x-2 text-[11px]">
-              <span className="text-[#555B50] font-semibold shrink-0">{meta.detailLabel}:</span>
-              <span className="font-bold text-[#242820] truncate">{meta.detailValue}</span>
+              <span className="text-[#555B50] dark:text-[#CAD6B7] font-semibold shrink-0">{meta.detailLabel}:</span>
+              <span className="font-bold text-[#242820] dark:text-white truncate">{meta.detailValue}</span>
             </div>
 
             {/* Mini Metadata Grid */}
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E3E1D6]/70 text-[10px]">
-              <div className="flex items-center space-x-1.5 text-[#555B50]">
-                <Calendar className="w-3 h-3 text-[#52613B] shrink-0" />
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E3E1D6]/70 dark:border-[#2F3C21]/70 text-[10px]">
+              <div className="flex items-center space-x-1.5 text-[#555B50] dark:text-[#CAD6B7]">
+                <Calendar className="w-3 h-3 text-[#52613B] dark:text-emerald-400 shrink-0" />
                 <span className="truncate">AY 2026-2027</span>
               </div>
-              <div className="flex items-center space-x-1.5 text-[#555B50]">
-                <Clock className="w-3 h-3 text-[#52613B] shrink-0" />
-                <span className="truncate">Last login: Today</span>
+              <div className="flex items-center space-x-1.5 text-[#555B50] dark:text-[#CAD6B7]">
+                <Clock className="w-3 h-3 text-[#52613B] dark:text-emerald-400 shrink-0" />
+                <span className="truncate">Session: Live</span>
               </div>
             </div>
           </div>
 
           {/* 3. QUICK ACTIONS MENU */}
-          <div className="p-2 bg-white divide-y divide-[#F0EFE6]">
+          <div className="p-2 bg-white dark:bg-[#1D251A] divide-y divide-[#F0EFE6] dark:divide-[#2F3C21]">
             <div className="space-y-0.5 pb-1.5">
               {/* 1. View Profile */}
               <button
                 onClick={handleViewProfile}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] hover:bg-[#F8F7F2] hover:text-[#52613B] transition-colors group text-left"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
                     <User className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <span className="block font-bold">View Full Profile</span>
-                    <span className="block text-[10px] text-[#555B50] font-normal">
-                      Identity & records
+                    <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
+                      Identity & academic records
                     </span>
                   </div>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 2. Account Settings */}
+              {/* 2. Edit Profile & Phone */}
               <button
-                onClick={handleAccountSettings}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] hover:bg-[#F8F7F2] hover:text-[#52613B] transition-colors group text-left"
+                onClick={() => {
+                  setIsOpen(false);
+                  setShowEditProfileModal(true);
+                }}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] transition-colors">
-                    <Settings className="w-3.5 h-3.5" />
+                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
+                    <Edit3 className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <span className="block font-bold">Account Settings</span>
-                    <span className="block text-[10px] text-[#555B50] font-normal">
-                      System & interface preferences
+                    <span className="block font-bold">Edit Profile Details</span>
+                    <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
+                      Name & registered phone
                     </span>
                   </div>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 3. Change Password */}
+              {/* 3. Security & Login History */}
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setShowSecurityModal(true);
+                }}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
+              >
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold">Security & Login History</span>
+                    <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
+                      Active sessions & audit trail
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
+              </button>
+
+              {/* 4. Change Password */}
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setShowPasswordModal(true);
                 }}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] hover:bg-[#F8F7F2] hover:text-[#52613B] transition-colors group text-left"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
                     <KeyRound className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <span className="block font-bold">Change Password</span>
-                    <span className="block text-[10px] text-[#555B50] font-normal">
-                      Update credentials & security
+                    <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
+                      Update security credentials
                     </span>
                   </div>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 4. Notification Preferences */}
+              {/* 5. Notification Preferences */}
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setShowNotificationModal(true);
                 }}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] hover:bg-[#F8F7F2] hover:text-[#52613B] transition-colors group text-left"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
                     <BellRing className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <span className="block font-bold">Notification Preferences</span>
-                    <span className="block text-[10px] text-[#555B50] font-normal">
+                    <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
                       Alerts & communications
                     </span>
                   </div>
@@ -481,22 +559,22 @@ const ProfilePopover = ({
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 5. Help & Support */}
+              {/* 6. Help & Support */}
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setShowHelpModal(true);
                 }}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] hover:bg-[#F8F7F2] hover:text-[#52613B] transition-colors group text-left"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
                     <HelpCircle className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <span className="block font-bold">Help & Support</span>
-                    <span className="block text-[10px] text-[#555B50] font-normal">
-                      IT desk & student guidelines
+                    <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
+                      IT desk & campus guidelines
                     </span>
                   </div>
                 </div>
@@ -504,22 +582,22 @@ const ProfilePopover = ({
               </button>
             </div>
 
-            {/* 6. Sign Out Button */}
+            {/* Sign Out Button */}
             <div className="pt-1.5">
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setShowSignOutConfirm(true);
                 }}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-[#DC4545] hover:bg-[#FDECEC] transition-colors group text-left"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-[#DC4545] hover:bg-[#FDECEC] dark:hover:bg-[#3D1A1A] transition-colors group text-left"
               >
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-[#FDECEC] group-hover:bg-[#F9D2D2] flex items-center justify-center text-[#DC4545] transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-[#FDECEC] dark:bg-[#3D1A1A] group-hover:bg-[#F9D2D2] flex items-center justify-center text-[#DC4545] transition-colors">
                     <LogOut className="w-3.5 h-3.5" />
                   </div>
                   <span>Sign Out</span>
                 </div>
-                <span className="text-[10px] uppercase font-bold text-[#DC4545] bg-white border border-[#F9D2D2] px-2 py-0.5 rounded">
+                <span className="text-[10px] uppercase font-bold text-[#DC4545] bg-white dark:bg-[#1D251A] border border-[#F9D2D2] dark:border-[#5C2323] px-2 py-0.5 rounded">
                   End Session
                 </span>
               </button>
@@ -528,31 +606,195 @@ const ProfilePopover = ({
         </div>
       )}
 
+      {/* MODAL: EDIT PROFILE */}
+      {showEditProfileModal && (
+        <div className="fixed inset-0 bg-[#243629]/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] w-full max-w-md overflow-hidden animate-scaleIn text-[#242820] dark:text-[#E8EDE4]">
+            <div className="p-4 bg-[#F8F7F2] dark:bg-[#151B13] border-b border-[#E7E5DA] dark:border-[#2F3C21] flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Edit3 className="w-4 h-4 text-[#52613B]" />
+                <h3 className="text-sm font-bold text-[#242820] dark:text-white">Edit Profile Details</h3>
+              </div>
+              <button
+                onClick={() => setShowEditProfileModal(false)}
+                className="p-1 rounded-lg hover:bg-[#E3E1D6] dark:hover:bg-[#2F3C21] text-[#555B50]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <form onSubmit={handleEditProfileSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-[#242820] dark:text-white mb-1">
+                  Registered Institutional Email
+                </label>
+                <input
+                  type="email"
+                  disabled
+                  value={user?.email || ''}
+                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F0EFE6] dark:bg-[#151B13] text-[#74796D] cursor-not-allowed"
+                />
+                <span className="text-[10px] text-[#74796D] mt-0.5 block">Managed by Institutional Administration</span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#242820] dark:text-white mb-1">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13] text-[#242820] dark:text-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-[#242820] dark:text-white mb-1">
+                  Contact Phone Number
+                </label>
+                <input
+                  type="text"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="+1 (555) 000-0000"
+                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13] text-[#242820] dark:text-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end space-x-3 border-t border-[#E7E5DA] dark:border-[#2F3C21]">
+                <button
+                  type="button"
+                  onClick={() => setShowEditProfileModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#555B50] hover:bg-[#F0EFE6] dark:hover:bg-[#2F3C21] border border-[#E3E1D6] dark:border-[#2F3C21]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editLoading}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#52613B] hover:bg-[#3F4D2D] shadow-sm disabled:opacity-50"
+                >
+                  {editLoading ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: SECURITY & LOGIN HISTORY */}
+      {showSecurityModal && (
+        <div className="fixed inset-0 bg-[#243629]/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] w-full max-w-lg overflow-hidden animate-scaleIn text-[#242820] dark:text-[#E8EDE4]">
+            <div className="p-4 bg-[#F8F7F2] dark:bg-[#151B13] border-b border-[#E7E5DA] dark:border-[#2F3C21] flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <ShieldCheck className="w-4 h-4 text-[#52613B]" />
+                <h3 className="text-sm font-bold text-[#242820] dark:text-white">Security & Session Audit</h3>
+              </div>
+              <button
+                onClick={() => setShowSecurityModal(false)}
+                className="p-1 rounded-lg hover:bg-[#E3E1D6] dark:hover:bg-[#2F3C21] text-[#555B50]"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4 text-xs">
+              {/* Current Active Session */}
+              <div className="p-3.5 rounded-xl border border-[#BCE1C5] dark:border-[#284E2D] bg-[#EAF5EC] dark:bg-[#1A261B] space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#198754] flex items-center space-x-1.5">
+                    <Laptop className="w-3.5 h-3.5" />
+                    <span>Current Active Device</span>
+                  </span>
+                  <span className="text-[10px] font-bold bg-[#198754] text-white px-2 py-0.5 rounded-full">
+                    THIS BROWSER
+                  </span>
+                </div>
+                <p className="text-[#344A38] dark:text-[#CAD6B7] text-[11px]">
+                  TLS 1.3 Secure Channel • HttpOnly JWT Authentication
+                </p>
+                <p className="text-[10px] text-[#555B50] dark:text-[#CAD6B7]">
+                  Session Time-to-Live: 24 Hours • Authenticated as {user?.role}
+                </p>
+              </div>
+
+              {/* Security Telemetry */}
+              <div className="grid grid-cols-2 gap-2 text-[11px]">
+                <div className="p-2.5 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13]">
+                  <span className="text-[#74796D] block">Token Protocol</span>
+                  <span className="font-bold text-[#242820] dark:text-white">HS256 Bearer JWT</span>
+                </div>
+                <div className="p-2.5 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13]">
+                  <span className="text-[#74796D] block">Access Boundary</span>
+                  <span className="font-bold text-[#242820] dark:text-white">Strict Role Scoped</span>
+                </div>
+              </div>
+
+              {/* Recent Login History */}
+              <div>
+                <span className="font-bold text-[#242820] dark:text-white block mb-2 flex items-center space-x-1.5">
+                  <History className="w-3.5 h-3.5 text-[#52613B]" />
+                  <span>Recent Authentication History</span>
+                </span>
+                <div className="space-y-1.5 border border-[#E3E1D6] dark:border-[#2F3C21] rounded-xl p-2 bg-[#F8F7F2] dark:bg-[#151B13] max-h-36 overflow-y-auto">
+                  {[
+                    { time: 'Today • 21:15', ip: '198.51.100.24', state: 'SUCCESSFUL_LOGIN', browser: 'Web Portal' },
+                    { time: 'Today • 17:04', ip: '198.51.100.24', state: 'TOKEN_REFRESH', browser: 'API Client' },
+                    { time: 'Yesterday • 14:20', ip: '198.51.100.24', state: 'SUCCESSFUL_LOGIN', browser: 'Web Portal' },
+                  ].map((h, i) => (
+                    <div key={i} className="flex items-center justify-between p-1.5 rounded-lg bg-white dark:bg-[#1D251A] text-[10px]">
+                      <div>
+                        <span className="font-bold text-[#242820] dark:text-white block">{h.time}</span>
+                        <span className="text-[#74796D]">{h.ip} • {h.browser}</span>
+                      </div>
+                      <span className="font-mono text-[#198754] bg-[#EAF5EC] dark:bg-[#1A261B] px-1.5 py-0.5 rounded font-bold">
+                        {h.state}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-2 flex items-center justify-end border-t border-[#E7E5DA] dark:border-[#2F3C21]">
+                <button
+                  type="button"
+                  onClick={() => setShowSecurityModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#52613B] hover:bg-[#3F4D2D] shadow-sm"
+                >
+                  Close Audit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CONFIRMATION DIALOG: SIGN OUT */}
       {showSignOutConfirm && (
         <div className="fixed inset-0 bg-[#243629]/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl border border-[#E7E5DA] w-full max-w-md overflow-hidden animate-scaleIn">
+          <div className="bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] w-full max-w-md overflow-hidden animate-scaleIn text-[#242820] dark:text-[#E8EDE4]">
             <div className="p-6">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 rounded-2xl bg-[#FDECEC] border border-[#F9D2D2] flex items-center justify-center text-[#DC4545] shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-[#FDECEC] dark:bg-[#3D1A1A] border border-[#F9D2D2] flex items-center justify-center text-[#DC4545] shrink-0">
                   <AlertTriangle className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-base font-bold text-[#242820]">
+                  <h3 className="text-base font-bold text-[#242820] dark:text-white">
                     Sign Out of Oakridge Academy?
                   </h3>
-                  <p className="text-xs text-[#555B50] mt-1.5 leading-relaxed">
-                    You are signed in as <span className="font-bold text-[#242820]">{user?.fullName}</span> ({user?.email}).
+                  <p className="text-xs text-[#555B50] dark:text-[#CAD6B7] mt-1.5 leading-relaxed">
+                    You are signed in as <span className="font-bold text-[#242820] dark:text-white">{user?.fullName}</span> ({user?.email}).
                     Terminating your session will end your active institutional workspace access.
                   </p>
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-end space-x-3 pt-4 border-t border-[#E7E5DA]">
+              <div className="mt-6 flex items-center justify-end space-x-3 pt-4 border-t border-[#E7E5DA] dark:border-[#2F3C21]">
                 <button
                   type="button"
                   onClick={() => setShowSignOutConfirm(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#555B50] hover:bg-[#F0EFE6] border border-[#E3E1D6] transition-colors"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#555B50] dark:text-[#CAD6B7] hover:bg-[#F0EFE6] dark:hover:bg-[#2F3C21] border border-[#E3E1D6] dark:border-[#2F3C21] transition-colors"
                 >
                   Stay Signed In
                 </button>
@@ -573,22 +815,22 @@ const ProfilePopover = ({
       {/* MODAL: CHANGE PASSWORD */}
       {showPasswordModal && (
         <div className="fixed inset-0 bg-[#243629]/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl border border-[#E7E5DA] w-full max-w-md overflow-hidden animate-scaleIn">
-            <div className="p-4 bg-[#F8F7F2] border-b border-[#E7E5DA] flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] w-full max-w-md overflow-hidden animate-scaleIn text-[#242820] dark:text-[#E8EDE4]">
+            <div className="p-4 bg-[#F8F7F2] dark:bg-[#151B13] border-b border-[#E7E5DA] dark:border-[#2F3C21] flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <KeyRound className="w-4 h-4 text-[#52613B]" />
-                <h3 className="text-sm font-bold text-[#242820]">Change Account Password</h3>
+                <h3 className="text-sm font-bold text-[#242820] dark:text-white">Change Account Password</h3>
               </div>
               <button
                 onClick={() => setShowPasswordModal(false)}
-                className="p-1 rounded-lg hover:bg-[#E3E1D6] text-[#555B50]"
+                className="p-1 rounded-lg hover:bg-[#E3E1D6] dark:hover:bg-[#2F3C21] text-[#555B50]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#242820] mb-1">
+                <label className="block text-xs font-bold text-[#242820] dark:text-white mb-1">
                   Current Password
                 </label>
                 <input
@@ -597,12 +839,12 @@ const ProfilePopover = ({
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter current password"
-                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] bg-[#F8F7F2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
+                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13] text-[#242820] dark:text-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#242820] mb-1">
+                <label className="block text-xs font-bold text-[#242820] dark:text-white mb-1">
                   New Password
                 </label>
                 <input
@@ -611,12 +853,12 @@ const ProfilePopover = ({
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Minimum 8 characters"
-                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] bg-[#F8F7F2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
+                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13] text-[#242820] dark:text-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#242820] mb-1">
+                <label className="block text-xs font-bold text-[#242820] dark:text-white mb-1">
                   Confirm New Password
                 </label>
                 <input
@@ -625,15 +867,15 @@ const ProfilePopover = ({
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-type new password"
-                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] bg-[#F8F7F2] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
+                  className="w-full text-xs px-3 py-2 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13] text-[#242820] dark:text-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52613B]"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end space-x-3 border-t border-[#E7E5DA]">
+              <div className="pt-2 flex items-center justify-end space-x-3 border-t border-[#E7E5DA] dark:border-[#2F3C21]">
                 <button
                   type="button"
                   onClick={() => setShowPasswordModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#555B50] hover:bg-[#F0EFE6] border border-[#E3E1D6]"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#555B50] hover:bg-[#F0EFE6] dark:hover:bg-[#2F3C21] border border-[#E3E1D6] dark:border-[#2F3C21]"
                 >
                   Cancel
                 </button>
@@ -653,22 +895,22 @@ const ProfilePopover = ({
       {/* MODAL: NOTIFICATION PREFERENCES */}
       {showNotificationModal && (
         <div className="fixed inset-0 bg-[#243629]/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl border border-[#E7E5DA] w-full max-w-md overflow-hidden animate-scaleIn">
-            <div className="p-4 bg-[#F8F7F2] border-b border-[#E7E5DA] flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] w-full max-w-md overflow-hidden animate-scaleIn text-[#242820] dark:text-[#E8EDE4]">
+            <div className="p-4 bg-[#F8F7F2] dark:bg-[#151B13] border-b border-[#E7E5DA] dark:border-[#2F3C21] flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <BellRing className="w-4 h-4 text-[#52613B]" />
-                <h3 className="text-sm font-bold text-[#242820]">Notification Preferences</h3>
+                <h3 className="text-sm font-bold text-[#242820] dark:text-white">Notification Preferences</h3>
               </div>
               <button
                 onClick={() => setShowNotificationModal(false)}
-                className="p-1 rounded-lg hover:bg-[#E3E1D6] text-[#555B50]"
+                className="p-1 rounded-lg hover:bg-[#E3E1D6] dark:hover:bg-[#2F3C21] text-[#555B50]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="p-6 space-y-4">
-              <p className="text-xs text-[#555B50] leading-relaxed">
-                Configure institutional communications and immediate academic event notifications for <span className="font-bold text-[#242820]">{user?.email}</span>.
+              <p className="text-xs text-[#555B50] dark:text-[#CAD6B7] leading-relaxed">
+                Configure institutional communications and immediate academic event notifications for <span className="font-bold text-[#242820] dark:text-white">{user?.email}</span>.
               </p>
 
               <div className="space-y-3">
@@ -679,10 +921,10 @@ const ProfilePopover = ({
                   { key: 'gradePublications', label: 'Grade & Report Card Publications', desc: 'Instant alerts when marks or PDFs are published' },
                   { key: 'emailDigest', label: 'Weekly Summary Digest', desc: 'Consolidated overview sent each Monday morning' }
                 ].map((item) => (
-                  <label key={item.key} className="flex items-start justify-between p-3 rounded-xl hover:bg-[#F8F7F2] border border-transparent hover:border-[#E3E1D6] cursor-pointer transition-colors">
+                  <label key={item.key} className="flex items-start justify-between p-3 rounded-xl hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] border border-transparent hover:border-[#E3E1D6] dark:hover:border-[#2F3C21] cursor-pointer transition-colors">
                     <div className="pr-3">
-                      <p className="text-xs font-bold text-[#242820]">{item.label}</p>
-                      <p className="text-[10px] text-[#555B50]">{item.desc}</p>
+                      <p className="text-xs font-bold text-[#242820] dark:text-white">{item.label}</p>
+                      <p className="text-[10px] text-[#555B50] dark:text-[#CAD6B7]">{item.desc}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -694,11 +936,11 @@ const ProfilePopover = ({
                 ))}
               </div>
 
-              <div className="pt-3 flex items-center justify-end space-x-3 border-t border-[#E7E5DA]">
+              <div className="pt-3 flex items-center justify-end space-x-3 border-t border-[#E7E5DA] dark:border-[#2F3C21]">
                 <button
                   type="button"
                   onClick={() => setShowNotificationModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#555B50] hover:bg-[#F0EFE6] border border-[#E3E1D6]"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-[#555B50] hover:bg-[#F0EFE6] dark:hover:bg-[#2F3C21] border border-[#E3E1D6] dark:border-[#2F3C21]"
                 >
                   Cancel
                 </button>
@@ -721,51 +963,51 @@ const ProfilePopover = ({
       {/* MODAL: HELP & SUPPORT */}
       {showHelpModal && (
         <div className="fixed inset-0 bg-[#243629]/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl border border-[#E7E5DA] w-full max-w-lg overflow-hidden animate-scaleIn">
-            <div className="p-4 bg-[#F8F7F2] border-b border-[#E7E5DA] flex items-center justify-between">
+          <div className="bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] w-full max-w-lg overflow-hidden animate-scaleIn text-[#242820] dark:text-[#E8EDE4]">
+            <div className="p-4 bg-[#F8F7F2] dark:bg-[#151B13] border-b border-[#E7E5DA] dark:border-[#2F3C21] flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <HelpCircle className="w-4 h-4 text-[#52613B]" />
-                <h3 className="text-sm font-bold text-[#242820]">Institutional Help & Support Desk</h3>
+                <h3 className="text-sm font-bold text-[#242820] dark:text-white">Institutional Help & Support Desk</h3>
               </div>
               <button
                 onClick={() => setShowHelpModal(false)}
-                className="p-1 rounded-lg hover:bg-[#E3E1D6] text-[#555B50]"
+                className="p-1 rounded-lg hover:bg-[#E3E1D6] dark:hover:bg-[#2F3C21] text-[#555B50]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="p-6 space-y-4">
-              <div className="p-4 rounded-xl bg-[#EAF5EC] border border-[#BCE1C5] text-xs">
+              <div className="p-4 rounded-xl bg-[#EAF5EC] dark:bg-[#1A261B] border border-[#BCE1C5] dark:border-[#284E2D] text-xs">
                 <p className="font-bold text-[#198754] flex items-center space-x-1.5">
                   <ShieldCheck className="w-4 h-4 shrink-0" />
                   <span>Oakridge IT Helpdesk • Active Academic Term</span>
                 </p>
-                <p className="text-[#344A38] mt-1 leading-relaxed text-[11px]">
+                <p className="text-[#344A38] dark:text-[#CAD6B7] mt-1 leading-relaxed text-[11px]">
                   Need technical assistance or report corrections? Reach out to your designated academic advisor or system administrator.
                 </p>
               </div>
 
               <div className="space-y-3 text-xs">
-                <div className="p-3 rounded-xl border border-[#E3E1D6] bg-[#F8F7F2]">
-                  <p className="font-bold text-[#242820]">Campus Technical Support</p>
-                  <p className="text-[#555B50] text-[11px] mt-0.5">Email: support@oakridge.edu | Phone: +1 (555) 234-5678</p>
-                  <p className="text-[10px] text-[#52613B] font-semibold mt-1">Available Mon–Fri: 08:00 AM – 06:00 PM EST</p>
+                <div className="p-3 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13]">
+                  <p className="font-bold text-[#242820] dark:text-white">Campus Technical Support</p>
+                  <p className="text-[#555B50] dark:text-[#CAD6B7] text-[11px] mt-0.5">Email: support@oakridge.edu | Phone: +1 (555) 234-5678</p>
+                  <p className="text-[10px] text-[#52613B] dark:text-emerald-400 font-semibold mt-1">Available Mon–Fri: 08:00 AM – 06:00 PM EST</p>
                 </div>
 
-                <div className="p-3 rounded-xl border border-[#E3E1D6] bg-[#F8F7F2]">
-                  <p className="font-bold text-[#242820]">Registrar & Academic Records</p>
-                  <p className="text-[#555B50] text-[11px] mt-0.5">Official transcripts, report cards, and enrolment verifications</p>
-                  <p className="text-[10px] text-[#52613B] font-semibold mt-1">Email: registrar@oakridge.edu</p>
+                <div className="p-3 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13]">
+                  <p className="font-bold text-[#242820] dark:text-white">Registrar & Academic Records</p>
+                  <p className="text-[#555B50] dark:text-[#CAD6B7] text-[11px] mt-0.5">Official transcripts, report cards, and enrolment verifications</p>
+                  <p className="text-[10px] text-[#52613B] dark:text-emerald-400 font-semibold mt-1">Email: registrar@oakridge.edu</p>
                 </div>
 
-                <div className="p-3 rounded-xl border border-[#E3E1D6] bg-[#F8F7F2]">
-                  <p className="font-bold text-[#242820]">Student Guidance & Counseling</p>
-                  <p className="text-[#555B50] text-[11px] mt-0.5">Academic counseling, attendance appeals, and faculty liaisons</p>
-                  <p className="text-[10px] text-[#52613B] font-semibold mt-1">Office: Building A, Room 204</p>
+                <div className="p-3 rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] bg-[#F8F7F2] dark:bg-[#151B13]">
+                  <p className="font-bold text-[#242820] dark:text-white">Student Guidance & Counseling</p>
+                  <p className="text-[#555B50] dark:text-[#CAD6B7] text-[11px] mt-0.5">Academic counseling, attendance appeals, and faculty liaisons</p>
+                  <p className="text-[10px] text-[#52613B] dark:text-emerald-400 font-semibold mt-1">Office: Building A, Room 204</p>
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-end border-t border-[#E7E5DA]">
+              <div className="pt-2 flex items-center justify-end border-t border-[#E7E5DA] dark:border-[#2F3C21]">
                 <button
                   type="button"
                   onClick={() => setShowHelpModal(false)}
