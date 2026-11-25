@@ -36,6 +36,13 @@ public class TimetableService {
     }
 
     @Transactional(readOnly = true)
+    public List<EnterpriseDTO.TimetableSlotDTO> getAll() {
+        return timetableRepository.findAllWithDetails().stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<EnterpriseDTO.TimetableSlotDTO> getByClassAndSection(UUID classId, UUID sectionId) {
         return timetableRepository.findByClassIdAndSectionIdWithDetails(classId, sectionId).stream()
                 .map(this::mapToDTO)

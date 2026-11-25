@@ -41,4 +41,13 @@ public interface TimetableRepository extends JpaRepository<Timetable, UUID> {
            "WHERE u.email = :teacherEmail " +
            "ORDER BY t.dayOfWeek, t.startTime")
     List<Timetable> findByTeacherEmailWithDetails(@Param("teacherEmail") String teacherEmail);
+
+    @Query("SELECT t FROM Timetable t " +
+           "JOIN FETCH t.schoolClass c " +
+           "JOIN FETCH t.section s " +
+           "JOIN FETCH t.subject sub " +
+           "JOIN FETCH t.teacher te " +
+           "JOIN FETCH te.user u " +
+           "ORDER BY t.dayOfWeek, t.startTime")
+    List<Timetable> findAllWithDetails();
 }

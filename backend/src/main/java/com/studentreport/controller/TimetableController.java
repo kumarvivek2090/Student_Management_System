@@ -21,6 +21,11 @@ public class TimetableController {
         this.timetableService = timetableService;
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<EnterpriseDTO.TimetableSlotDTO>>> getAll() {
+        return ResponseEntity.ok(ApiResponse.ok(timetableService.getAll()));
+    }
+
     @GetMapping("/class/{classId}/section/{sectionId}")
     public ResponseEntity<ApiResponse<List<EnterpriseDTO.TimetableSlotDTO>>> getByClassAndSection(
             @PathVariable UUID classId, @PathVariable UUID sectionId) {
