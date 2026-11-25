@@ -563,22 +563,22 @@ const AttendanceManagement = () => {
 
           {/* SUBMISSION LOCK STATUS BANNER */}
           {lockStatus?.isSubmitted ? (
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-900/20 via-[#182216] to-emerald-950/30 border border-emerald-500/40 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm animate-fadeIn">
+            <div className="p-4 rounded-2xl bg-emerald-50/95 dark:bg-gradient-to-r dark:from-emerald-950/40 dark:via-[#162215] dark:to-emerald-950/50 border border-emerald-200 dark:border-emerald-700/50 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm animate-fadeIn transition-colors">
               <div className="flex items-start space-x-3.5">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-500/40 flex items-center justify-center text-[#247A55] dark:text-emerald-400 shrink-0">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#242820] dark:text-white flex items-center space-x-2">
+                  <h4 className="text-sm font-bold text-emerald-950 dark:text-white flex items-center space-x-2">
                     <span>Attendance Submitted Successfully</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-300">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-500/20 text-[#247A55] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30">
                       Locked
                     </span>
                   </h4>
-                  <p className="text-xs text-[#555B50] dark:text-[#CAD6B7] mt-0.5">
-                    Submitted on <strong>{new Date(lockStatus.submittedAt).toLocaleDateString()}</strong> at{' '}
-                    <strong>{new Date(lockStatus.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong> by{' '}
-                    <strong className="text-[#52613B] dark:text-[#B2D297]">{lockStatus.submittedByName}</strong>.
+                  <p className="text-xs text-emerald-800/90 dark:text-[#CAD6B7] mt-0.5 leading-relaxed">
+                    Submitted on <strong className="text-emerald-950 dark:text-white font-bold">{new Date(lockStatus.submittedAt).toLocaleDateString()}</strong> at{' '}
+                    <strong className="text-emerald-950 dark:text-white font-bold">{new Date(lockStatus.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong> by{' '}
+                    <strong className="text-[#247A55] dark:text-[#B2D297] font-bold">{lockStatus.submittedByName}</strong>.
                     {!isAdmin && ' Register is locked in read-only mode to prevent duplicate submissions.'}
                   </p>
                 </div>
@@ -588,21 +588,22 @@ const AttendanceManagement = () => {
                 <button
                   type="button"
                   onClick={() => setShowCorrectionModal(true)}
-                  className="py-2 px-3.5 rounded-xl bg-[#52613B] hover:bg-[#3F4D2D] text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0"
+                  className="py-2 px-3.5 rounded-xl bg-[#52613B] hover:bg-[#3F4D2D] text-white text-xs font-bold flex items-center space-x-1.5 shadow-sm shrink-0 transition-colors"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>Authorize Correction</span>
                 </button>
               ) : (
-                <div className="text-[11px] font-semibold text-[#555B50] dark:text-[#CAD6B7] bg-[#F8F7F2] dark:bg-[#131A12] px-3 py-1.5 rounded-xl border border-[#E3E1D6] dark:border-[#283623] shrink-0">
-                  Read-Only Mode
+                <div className="text-[11px] font-bold text-emerald-900 dark:text-[#CAD6B7] bg-white dark:bg-[#131A12] px-3.5 py-1.5 rounded-xl border border-emerald-200 dark:border-[#283623] shadow-xs shrink-0 flex items-center space-x-1.5">
+                  <Lock className="w-3.5 h-3.5 text-[#247A55] dark:text-[#B2D297]" />
+                  <span>Read-Only Mode</span>
                 </div>
               )}
             </div>
           ) : (
-            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-xs text-amber-800 dark:text-amber-200">
+            <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200">
               <div className="flex items-center space-x-2.5">
-                <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+                <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span>
                   <strong>Notice:</strong> Daily attendance has not yet been submitted for this session. Once saved, it will be locked according to institutional policy.
                 </span>
@@ -704,8 +705,8 @@ const AttendanceManagement = () => {
                       <span>Authorize Changes</span>
                     </button>
                   ) : (
-                    <div className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-[#1A2217] text-gray-500 dark:text-gray-400 text-xs font-bold flex items-center space-x-1.5 border border-gray-200 dark:border-gray-800">
-                      <Lock className="w-3.5 h-3.5" />
+                    <div className="py-2 px-3.5 rounded-xl bg-[#F0EFE6] dark:bg-[#1A2217] text-[#555B50] dark:text-[#CAD6B7] text-xs font-bold flex items-center space-x-1.5 border border-[#E3E1D6] dark:border-[#283623]">
+                      <Lock className="w-3.5 h-3.5 text-[#74796D] dark:text-[#8D9686]" />
                       <span>Register Locked</span>
                     </div>
                   )}
@@ -870,8 +871,8 @@ const AttendanceManagement = () => {
                       <span>Authorize Changes with Reason</span>
                     </button>
                   ) : (
-                    <div className="py-2 px-3 rounded-xl bg-gray-100 dark:bg-[#182216] text-gray-500 dark:text-gray-400 text-xs font-bold flex items-center space-x-1.5 border border-gray-200 dark:border-gray-800">
-                      <Lock className="w-3.5 h-3.5" />
+                    <div className="py-2 px-3.5 rounded-xl bg-[#F0EFE6] dark:bg-[#182216] text-[#555B50] dark:text-[#CAD6B7] text-xs font-bold flex items-center space-x-1.5 border border-[#E3E1D6] dark:border-[#283623]">
+                      <Lock className="w-3.5 h-3.5 text-[#74796D] dark:text-[#8D9686]" />
                       <span>Register Locked</span>
                     </div>
                   )}
