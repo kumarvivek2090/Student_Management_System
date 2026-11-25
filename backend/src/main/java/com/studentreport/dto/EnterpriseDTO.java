@@ -218,8 +218,22 @@ public class EnterpriseDTO {
         private LocalDate endDate;
         private String reason;
         private LeaveRequest.LeaveStatus status;
+        private String documentUrl;
+        private String facultyRecommendation;
+        private UUID recommendedById;
+        private String recommendedByName;
+        private UUID reviewerId;
+        private String reviewerName;
         private String reviewerRemarks;
         private ZonedDateTime createdAt;
+        private ZonedDateTime decisionAt;
+
+        // Context details
+        private String studentRollNumber;
+        private String studentCode;
+        private String className;
+        private String sectionName;
+        private String department;
     }
 
     @Data
@@ -230,6 +244,42 @@ public class EnterpriseDTO {
         private LocalDate startDate;
         private LocalDate endDate;
         private String reason;
+        private String documentUrl;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReviewLeaveRequest {
+        private LeaveRequest.LeaveStatus status;
+        private String remarks;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RecommendLeaveRequest {
+        private String recommendation;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LeaveStatsDTO {
+        private long total;
+        private long pending;
+        private long approved;
+        private long rejected;
+        private long cancelled;
+        private long teacherTotal;
+        private long teacherPending;
+        private long teacherApproved;
+        private long teacherRejected;
+        private long studentTotal;
+        private long studentPending;
+        private long studentApproved;
+        private long studentRejected;
     }
 
     // --- MATERIAL DTOs ---

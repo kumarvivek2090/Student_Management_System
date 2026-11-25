@@ -98,6 +98,7 @@ function App() {
         <Route path="/admin/examinations" element={<ProtectedRoute allowedRoles={['ADMIN', 'TEACHER']}><ExaminationManagement /></ProtectedRoute>} />
         <Route path="/admin/marks" element={<ProtectedRoute allowedRoles={['ADMIN', 'TEACHER']}><MarksEntry /></ProtectedRoute>} />
         <Route path="/admin/attendance" element={<ProtectedRoute allowedRoles={['ADMIN', 'TEACHER']}><AttendanceManagement /></ProtectedRoute>} />
+        <Route path="/admin/leaves" element={<ProtectedRoute allowedRoles={['ADMIN']}><LeaveRequestsPage /></ProtectedRoute>} />
         <Route path="/admin/remarks" element={<ProtectedRoute allowedRoles={['ADMIN', 'TEACHER']}><TeacherRemarks /></ProtectedRoute>} />
         <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['ADMIN', 'TEACHER']}><ReportCards /></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['ADMIN']}><UserManagement /></ProtectedRoute>} />

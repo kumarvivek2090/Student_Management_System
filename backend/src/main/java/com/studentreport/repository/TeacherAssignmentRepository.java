@@ -12,6 +12,7 @@ import java.util.UUID;
 @Repository
 public interface TeacherAssignmentRepository extends JpaRepository<TeacherAssignment, UUID> {
     List<TeacherAssignment> findByTeacherId(UUID teacherId);
+    List<TeacherAssignment> findBySchoolClassId(UUID classId);
 
     @Query("SELECT ta FROM TeacherAssignment ta " +
            "JOIN FETCH ta.schoolClass " +

@@ -65,6 +65,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen }) => 
       items: [
         { name: 'Marks Management', path: '/marks/entry', icon: Award },
         { name: 'Attendance', path: '/attendance', icon: ClipboardCheck },
+        { name: 'Leave Management', path: '/admin/leaves', icon: CalendarDays },
         { name: 'Teacher Remarks', path: '/remarks', icon: MessageSquare },
         { name: 'Report Cards & PDF', path: '/reports', icon: FileText },
       ]

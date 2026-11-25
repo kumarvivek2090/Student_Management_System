@@ -54,6 +54,19 @@ public class LeaveRequest {
     @Column(name = "reviewer_remarks", columnDefinition = "TEXT")
     private String reviewerRemarks;
 
+    @Column(name = "document_url", length = 500)
+    private String documentUrl;
+
+    @Column(name = "faculty_recommendation", columnDefinition = "TEXT")
+    private String facultyRecommendation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recommended_by")
+    private User recommendedBy;
+
+    @Column(name = "decision_at")
+    private ZonedDateTime decisionAt;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private ZonedDateTime createdAt;
@@ -63,10 +76,10 @@ public class LeaveRequest {
     private ZonedDateTime updatedAt;
 
     public enum LeaveType {
-        SICK, CASUAL, FAMILY, MEDICAL, ACADEMIC, OTHER
+        SICK, CASUAL, EMERGENCY, PERSONAL, MEDICAL, ACADEMIC, FAMILY, OTHER
     }
 
     public enum LeaveStatus {
-        PENDING, APPROVED, REJECTED
+        PENDING, APPROVED, REJECTED, CANCELLED
     }
 }

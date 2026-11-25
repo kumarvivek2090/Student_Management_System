@@ -47,6 +47,50 @@ public class NotificationService {
     }
 
     @Transactional
+    public void sendToUser(User user, String title, String message, Notification.NotificationType type) {
+        if (user == null) return;
+        Notification n = Notification.builder()
+                .user(user)
+                .title(title)
+                .message(message)
+                .type(type != null ? type : Notification.NotificationType.INFO)
+                .isRead(false)
+                .build();
+        notificationRepository.save(n);
+    }
+
+    @Transactional
+    public void notifyAdmins(String title, String message, Notification.NotificationType type) {
+        List<User> admins = userRepository.findByRole(User.Role.ADMIN);
+        List<Notification> toSave = admins.stream()
+                .map(u -> Notification.builder()
+                        .user(u)
+                        .title(title)
+                        .message(message)
+                        .type(type != null ? type : Notification.NotificationType.INFO)
+                        .isRead(false)
+                        .build())
+                .toList();
+        notificationRepository.saveAll(toSave);
+    }
+
+    @Transactional
+    public void notifyTeachers(List<User> teachers, String title, String message, Notification.NotificationType type) {
+        if (teachers == null || teachers.isEmpty()) return;
+        List<Notification> toSave = teachers.stream()
+                .distinct()
+                .map(u -> Notification.builder()
+                        .user(u)
+                        .title(title)
+                        .message(message)
+                        .type(type != null ? type : Notification.NotificationType.INFO)
+                        .isRead(false)
+                        .build())
+                .toList();
+        notificationRepository.saveAll(toSave);
+    }
+
+    @Transactional
     public int broadcast(String title, String message, String roleTarget, Notification.NotificationType type) {
         List<User> targetUsers;
         if (roleTarget == null || "ALL".equalsIgnoreCase(roleTarget)) {
