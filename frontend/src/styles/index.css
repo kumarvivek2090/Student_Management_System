@@ -53,7 +53,7 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-4 py-2.5 border border-[#E3E1D6] dark:border-[#2D3D27] rounded-lg shadow-sm text-sm font-semibold text-[#242820] dark:text-[#E8EDE4] bg-white dark:bg-[#182216] hover:bg-[#F0EFE6] dark:hover:bg-[#222E1E] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-olive-300 transition-colors duration-150;
+    @apply inline-flex items-center justify-center px-4 py-2.5 border border-[#E3E1D6] dark:border-[#3D5235] rounded-lg shadow-sm text-sm font-semibold text-[#242820] dark:text-[#F3F6F0] bg-white dark:bg-[#1D281A] hover:bg-[#F0EFE6] dark:hover:bg-[#283924] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-olive-300 transition-colors duration-150;
   }
 
   .card-premium {
@@ -84,7 +84,8 @@
 }
 
 .dark [class*="bg-cream/"],
-.dark [class*="bg-ivory/"] {
+.dark [class*="bg-ivory/"],
+.dark [class*="bg-white/"]:not(.keep-white) {
   background-color: #172115 !important;
 }
 
@@ -106,13 +107,19 @@
 .dark .text-gray-700,
 .dark .text-gray-600,
 .dark .text-gray-500 {
-  color: #B5BFAB !important;
+  color: #CAD6B7 !important;
 }
 
+.dark .text-\[\#52613B\],
 .dark .text-olive-700,
 .dark .text-olive-800,
 .dark .text-olive-900 {
   color: #B2D297 !important;
+}
+
+.dark .text-\[\#247A55\],
+.dark .text-\[\#198754\] {
+  color: #4ADE80 !important;
 }
 
 .dark .text-olive-600 {

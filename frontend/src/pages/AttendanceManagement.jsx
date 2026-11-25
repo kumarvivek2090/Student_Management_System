@@ -767,7 +767,7 @@ const AttendanceManagement = () => {
                                   }${
                                     status === 'PRESENT'
                                       ? 'bg-[#247A55] text-white shadow-xs'
-                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-emerald-100 hover:text-[#247A55]'
+                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-emerald-100 dark:hover:bg-emerald-950/70 hover:text-[#247A55] dark:hover:text-emerald-300'
                                   }`}
                                 >
                                   <Check className="w-3 h-3" />
@@ -783,7 +783,7 @@ const AttendanceManagement = () => {
                                   }${
                                     status === 'ABSENT'
                                       ? 'bg-[#B84040] text-white shadow-xs'
-                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-red-100 hover:text-[#B84040]'
+                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-red-100 dark:hover:bg-rose-950/70 hover:text-[#B84040] dark:hover:text-rose-300'
                                   }`}
                                 >
                                   <X className="w-3 h-3" />
@@ -799,7 +799,7 @@ const AttendanceManagement = () => {
                                   }${
                                     status === 'LATE'
                                       ? 'bg-[#D97706] text-white shadow-xs'
-                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-amber-100 hover:text-amber-800'
+                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-amber-100 dark:hover:bg-amber-950/70 hover:text-amber-800 dark:hover:text-amber-300'
                                   }`}
                                 >
                                   <Clock className="w-3 h-3" />
@@ -815,7 +815,7 @@ const AttendanceManagement = () => {
                                   }${
                                     status === 'EXCUSED'
                                       ? 'bg-[#386A91] text-white shadow-xs'
-                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-blue-100 hover:text-blue-800'
+                                      : 'bg-[#F0EFE6] dark:bg-[#131A12] text-[#555B50] dark:text-[#CAD6B7] hover:bg-blue-100 dark:hover:bg-sky-950/70 hover:text-blue-800 dark:hover:text-sky-300'
                                   }`}
                                 >
                                   <HelpCircle className="w-3 h-3" />
