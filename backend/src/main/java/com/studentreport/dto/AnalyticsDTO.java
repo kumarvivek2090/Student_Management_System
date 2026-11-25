@@ -72,4 +72,13 @@ public class AnalyticsDTO {
         private BigDecimal averageMarks;
         private BigDecimal passRate;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TrendDTO {
+        private String label;
+        private BigDecimal value;
+    }
 }

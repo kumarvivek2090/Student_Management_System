@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -17,56 +17,102 @@ import {
   ShieldCheck,
   Sliders,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Clock,
+  UserCheck,
+  CreditCard,
+  Bell,
+  History,
+  Database,
+  RefreshCw,
+  TrendingUp,
+  FolderArchive,
+  FileCheck,
+  Send,
+  AlertTriangle,
+  CalendarDays,
+  Mail,
+  ChevronLeft,
+  X
 } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen }) => {
   const { user, logout } = useAuth();
   const role = user?.role;
 
+  // 1. ADMIN NAVIGATION (21 Items)
   const adminNav = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
     { name: 'Students', path: '/admin/students', icon: GraduationCap },
     { name: 'Teachers', path: '/admin/teachers', icon: Users },
     { name: 'Classes & Sections', path: '/admin/classes', icon: Layers },
     { name: 'Subjects', path: '/admin/subjects', icon: BookOpen },
-    { name: 'Academic Years', path: '/admin/academic-years', icon: Calendar },
+    { name: 'Timetable Management', path: '/admin/timetable', icon: Clock },
+    { name: 'Academic Calendar', path: '/admin/calendar', icon: Calendar },
     { name: 'Examinations', path: '/admin/examinations', icon: Award },
     { name: 'Marks Management', path: '/marks/entry', icon: Award },
     { name: 'Attendance', path: '/attendance', icon: ClipboardCheck },
     { name: 'Teacher Remarks', path: '/remarks', icon: MessageSquare },
-    { name: 'Report Cards', path: '/reports', icon: FileText },
-    { name: 'Analytics', path: '/analytics', icon: BarChart3 },
-    { name: 'Grading Scales', path: '/admin/grading', icon: Sliders },
+    { name: 'Report Cards & PDF', path: '/reports', icon: FileText },
+    { name: 'User Management', path: '/admin/users', icon: UserCheck },
+    { name: 'Fee Management', path: '/admin/fees', icon: CreditCard },
+    { name: 'Notifications & Announcements', path: '/admin/notifications', icon: Bell },
+    { name: 'Activity Logs', path: '/admin/activity-logs', icon: History },
+    { name: 'Database Management', path: '/admin/database', icon: Database },
+    { name: 'Backup & Restore', path: '/admin/backup', icon: RefreshCw },
+    { name: 'Security & Permissions', path: '/admin/security', icon: ShieldCheck },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
   ];
 
+  // 2. TEACHER NAVIGATION (13 Items)
   const teacherNav = [
     { name: 'Teacher Dashboard', path: '/teacher/dashboard', icon: LayoutDashboard },
     { name: 'Assigned Classes', path: '/teacher/classes', icon: Layers },
+    { name: 'My Timetable', path: '/teacher/timetable', icon: Clock },
     { name: 'Marks Entry', path: '/marks/entry', icon: Award },
     { name: 'Attendance', path: '/attendance', icon: ClipboardCheck },
+    { name: 'Assignments', path: '/teacher/assignments', icon: FileCheck },
+    { name: 'Exams & Assessments', path: '/admin/examinations', icon: Award },
+    { name: 'Student Progress', path: '/teacher/progress', icon: TrendingUp },
+    { name: 'Class Materials', path: '/teacher/materials', icon: FolderArchive },
     { name: 'Student Remarks', path: '/remarks', icon: MessageSquare },
+    { name: 'Leave Requests', path: '/teacher/leaves', icon: Calendar },
     { name: 'Report Cards', path: '/reports', icon: FileText },
-    { name: 'Class Analytics', path: '/analytics', icon: BarChart3 },
+    { name: 'Notifications', path: '/teacher/notifications', icon: Bell },
   ];
 
+  // 3. STUDENT NAVIGATION (13 Items)
   const studentNav = [
     { name: 'My Dashboard', path: '/student/dashboard', icon: LayoutDashboard },
     { name: 'My Profile', path: '/student/profile', icon: GraduationCap },
+    { name: 'My Timetable', path: '/student/timetable', icon: Clock },
     { name: 'My Marks & Grades', path: '/student/marks', icon: Award },
     { name: 'My Attendance', path: '/student/attendance', icon: ClipboardCheck },
+    { name: 'Assignments & Submissions', path: '/student/assignments', icon: FileCheck },
+    { name: 'Exam Schedule', path: '/student/exams', icon: Calendar },
+    { name: 'Learning Resources', path: '/student/resources', icon: BookOpen },
+    { name: 'Fee Details', path: '/student/fees', icon: CreditCard },
+    { name: 'Leave Application', path: '/student/leave-apply', icon: Send },
     { name: 'Teacher Remarks', path: '/student/remarks', icon: MessageSquare },
     { name: 'Report Cards & PDF', path: '/student/reports', icon: FileText },
+    { name: 'Notifications', path: '/student/notifications', icon: Bell },
   ];
 
+  // 4. PARENT NAVIGATION (12 Items)
   const parentNav = [
     { name: 'Parent Dashboard', path: '/parent/dashboard', icon: LayoutDashboard },
     { name: 'Children Profiles', path: '/parent/children', icon: Users },
     { name: 'Academic Results', path: '/parent/results', icon: Award },
     { name: 'Attendance Records', path: '/parent/attendance', icon: ClipboardCheck },
+    { name: 'Attendance Alerts', path: '/parent/alerts', icon: AlertTriangle },
+    { name: 'Exam Schedule', path: '/parent/exams', icon: Calendar },
+    { name: 'Academic Calendar', path: '/parent/calendar', icon: CalendarDays },
+    { name: 'Fee & Payments', path: '/parent/fees', icon: CreditCard },
     { name: 'Teacher Feedback', path: '/parent/feedback', icon: MessageSquare },
+    { name: 'Teacher Communication', path: '/parent/communication', icon: Mail },
     { name: 'Report Cards', path: '/parent/reports', icon: FileText },
+    { name: 'Notifications', path: '/parent/notifications', icon: Bell },
   ];
 
   let navItems = adminNav;
@@ -74,75 +120,121 @@ const Sidebar = () => {
   if (role === 'STUDENT') navItems = studentNav;
   if (role === 'PARENT') navItems = parentNav;
 
+  const sidebarWidth = isCollapsed ? 'w-20' : 'w-64';
+
   return (
-    <aside className="w-64 bg-olive-800 text-ivory flex flex-col h-screen fixed left-0 top-0 z-30 shadow-elevated">
-      {/* Brand Header */}
-      <div className="h-16 flex items-center px-6 bg-olive-900/60 border-b border-olive-700/50">
-        <div className="w-8 h-8 rounded-lg bg-olive-500 flex items-center justify-center mr-3 shadow-sm">
-          <GraduationCap className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h1 className="font-semibold text-sm tracking-wide text-white">Oakridge Academy</h1>
-          <p className="text-[10px] text-olive-300 font-medium uppercase tracking-wider">Report System</p>
-        </div>
-      </div>
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 bg-forest/80 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+        />
+      )}
 
-      {/* Role Badge */}
-      <div className="px-6 py-3 border-b border-olive-700/30 bg-olive-900/20 flex items-center justify-between">
-        <span className="text-xs text-olive-200">Access Mode</span>
-        <span className="text-[10px] font-semibold bg-olive-500/20 text-olive-100 border border-olive-400/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
-          {role || 'Guest'}
-        </span>
-      </div>
-
-      {/* Navigation List */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs font-medium transition-all duration-150 ${
-                  isActive
-                    ? 'bg-olive-500 text-white font-semibold shadow-sm'
-                    : 'text-olive-100/80 hover:bg-olive-700/50 hover:text-white'
-                }`
-              }
-            >
-              <div className="flex items-center space-x-3">
-                <Icon className="w-4 h-4 shrink-0" />
-                <span>{item.name}</span>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
-            </NavLink>
-          );
-        })}
-      </nav>
-
-      {/* User Footer */}
-      <div className="p-4 border-t border-olive-700/50 bg-olive-900/40">
-        <div className="flex items-center justify-between">
+      {/* Main Sidebar Element */}
+      <aside
+        className={`${sidebarWidth} bg-[#1D251A] text-ivory flex flex-col h-screen fixed left-0 top-0 z-50 shadow-elevated transition-all duration-300 ease-in-out border-r border-[#2F3C21] ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
+        {/* Brand Header */}
+        <div className="h-16 flex items-center justify-between px-4 bg-[#151B13] border-b border-[#2F3C21]">
           <div className="flex items-center space-x-3 overflow-hidden">
-            <div className="w-8 h-8 rounded-full bg-olive-500 flex items-center justify-center font-bold text-xs text-white uppercase shrink-0">
-              {user?.fullName?.charAt(0) || 'U'}
+            <div className="w-9 h-9 rounded-xl bg-[#52613B] flex items-center justify-center shrink-0 shadow-md border border-[#7B8F5E]/40">
+              <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            <div className="overflow-hidden">
-              <p className="text-xs font-medium text-white truncate">{user?.fullName || 'User'}</p>
-              <p className="text-[10px] text-olive-300 truncate">{user?.email}</p>
-            </div>
+            {!isCollapsed && (
+              <div className="overflow-hidden">
+                <h1 className="font-bold text-sm tracking-wide text-white truncate">Oakridge Academy</h1>
+                <p className="text-[10px] text-[#CAD6B7] font-semibold uppercase tracking-wider">Enterprise SIS</p>
+              </div>
+            )}
           </div>
+
+          {/* Desktop Collapse Button */}
           <button
-            onClick={logout}
-            title="Sign out"
-            className="p-1.5 rounded-md hover:bg-olive-700/70 text-olive-300 hover:text-white transition-colors"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="hidden lg:flex p-1.5 rounded-lg bg-[#242E20] hover:bg-[#2F3C21] text-[#E4EAD9] transition-colors border border-[#3F4D2D]/60"
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <LogOut className="w-4 h-4" />
+            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </button>
+
+          {/* Mobile Close Button */}
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="lg:hidden p-1.5 rounded-lg hover:bg-[#242E20] text-[#CAD6B7]"
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
-      </div>
-    </aside>
+
+        {/* Role Badge */}
+        {!isCollapsed && (
+          <div className="px-5 py-2.5 border-b border-[#2F3C21]/60 bg-[#1A2217] flex items-center justify-between">
+            <span className="text-[11px] font-medium text-[#CAD6B7]">Access Authority</span>
+            <span className="text-[10px] font-bold bg-[#52613B]/40 text-[#E4EAD9] border border-[#7B8F5E]/60 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              {role || 'Guest'}
+            </span>
+          </div>
+        )}
+
+        {/* Navigation List */}
+        <nav className="flex-1 overflow-y-auto px-2.5 py-3 space-y-1 scrollbar-thin">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={() => setMobileOpen(false)}
+                title={isCollapsed ? item.name : undefined}
+                className={({ isActive }) =>
+                  `flex items-center ${isCollapsed ? 'justify-center px-2' : 'justify-between px-3.5'} py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
+                    isActive
+                      ? 'bg-[#52613B] text-white shadow-md border border-[#7B8F5E]/50'
+                      : 'text-[#E4EAD9] hover:bg-[#2F3C21] hover:text-white'
+                  }`
+                }
+              >
+                <div className={`flex items-center ${isCollapsed ? 'space-x-0' : 'space-x-3'} overflow-hidden`}>
+                  <Icon className="w-4 h-4 shrink-0 text-[#E4EAD9]" />
+                  {!isCollapsed && <span className="truncate">{item.name}</span>}
+                </div>
+                {!isCollapsed && <ChevronRight className="w-3.5 h-3.5 opacity-60 shrink-0 text-[#CAD6B7]" />}
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        {/* User Footer */}
+        <div className="p-3 border-t border-[#2F3C21] bg-[#151B13]">
+          <div className="flex items-center justify-between">
+            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'} overflow-hidden`}>
+              <div className="w-8 h-8 rounded-full bg-[#52613B] border border-[#7B8F5E] flex items-center justify-center font-bold text-xs text-white uppercase shrink-0 shadow-sm">
+                {user?.fullName?.charAt(0) || 'U'}
+              </div>
+              {!isCollapsed && (
+                <div className="overflow-hidden">
+                  <p className="text-xs font-bold text-white truncate">{user?.fullName || 'User'}</p>
+                  <p className="text-[10px] text-[#CAD6B7] truncate">{user?.email}</p>
+                </div>
+              )}
+            </div>
+            {!isCollapsed && (
+              <button
+                onClick={logout}
+                title="Sign out of system"
+                className="p-1.5 rounded-lg hover:bg-[#2F3C21] text-[#E4EAD9] hover:text-white transition-colors border border-transparent hover:border-[#3F4D2D]"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </aside>
+    </>
   );
 };
 

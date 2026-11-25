@@ -24,11 +24,15 @@ public class DashboardDTO {
         private long totalSubjects;
         private BigDecimal averagePerformance;
         private BigDecimal averageAttendance;
+        private BigDecimal pendingFeeCollections;
+        private long upcomingExaminationsCount;
         private List<AnalyticsDTO.GradeCountDTO> gradeDistribution;
         private List<AnalyticsDTO.TopStudentDTO> topPerformingStudents;
         private List<AnalyticsDTO.TopStudentDTO> studentsNeedingAttention;
         private List<AnalyticsDTO.ClassPerformanceDTO> classWisePerformance;
         private List<AnalyticsDTO.SubjectAverageDTO> subjectWiseAverages;
+        private List<AnalyticsDTO.TrendDTO> monthlyAttendanceTrends;
+        private List<AnalyticsDTO.TrendDTO> studentEnrollmentTrends;
         private List<RecentActivityDTO> recentActivities;
     }
 
