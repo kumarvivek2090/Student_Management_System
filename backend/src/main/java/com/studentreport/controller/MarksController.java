@@ -3,6 +3,7 @@ package com.studentreport.controller;
 import com.studentreport.dto.ApiResponse;
 import com.studentreport.dto.MarksDTO;
 import com.studentreport.service.MarksService;
+import com.studentreport.service.SecurityAuthorizationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,9 +18,12 @@ import java.util.UUID;
 public class MarksController {
 
     private final MarksService marksService;
+    private final SecurityAuthorizationService securityAuthorizationService;
 
-    public MarksController(MarksService marksService) {
+    public MarksController(MarksService marksService,
+                           SecurityAuthorizationService securityAuthorizationService) {
         this.marksService = marksService;
+        this.securityAuthorizationService = securityAuthorizationService;
     }
 
     @PostMapping("/bulk")
@@ -31,12 +35,16 @@ public class MarksController {
     }
 
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<ApiResponse<List<MarksDTO.MarkResponseDTO>>> getMarksByStudent(@PathVariable UUID studentId) {
+    public ResponseEntity<ApiResponse<List<MarksDTO.MarkResponseDTO>>> getMarksByStudent(
+            @PathVariable UUID studentId, Authentication auth) {
+        securityAuthorizationService.validateStudentAcademicAccess(auth, studentId);
         return ResponseEntity.ok(ApiResponse.ok(marksService.getMarksByStudent(studentId)));
     }
 
     @GetMapping("/assessment/{assessmentId}")
-    public ResponseEntity<ApiResponse<List<MarksDTO.MarkResponseDTO>>> getMarksByAssessment(@PathVariable UUID assessmentId) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    public ResponseEntity<ApiResponse<List<MarksDTO.MarkResponseDTO>>> getMarksByAssessment(
+            @PathVariable UUID assessmentId) {
         return ResponseEntity.ok(ApiResponse.ok(marksService.getMarksByAssessment(assessmentId)));
     }
 }

@@ -19,6 +19,7 @@ public interface AttendanceRecordRepository extends JpaRepository<AttendanceReco
     @Query("SELECT a FROM AttendanceRecord a " +
            "JOIN FETCH a.student s " +
            "JOIN FETCH s.user u " +
+           "LEFT JOIN FETCH a.recordedBy r " +
            "WHERE a.schoolClass.id = :classId AND a.section.id = :sectionId AND a.attendanceDate = :date " +
            "ORDER BY s.rollNumber ASC")
     List<AttendanceRecord> findByClassSectionAndDate(

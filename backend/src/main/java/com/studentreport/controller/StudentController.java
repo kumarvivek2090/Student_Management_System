@@ -17,9 +17,12 @@ import java.util.UUID;
 public class StudentController {
 
     private final StudentService studentService;
+    private final com.studentreport.service.SecurityAuthorizationService securityAuthorizationService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService,
+                             com.studentreport.service.SecurityAuthorizationService securityAuthorizationService) {
         this.studentService = studentService;
+        this.securityAuthorizationService = securityAuthorizationService;
     }
 
     @GetMapping
@@ -41,7 +44,9 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<StudentDTO.StudentResponse>> getStudentById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<StudentDTO.StudentResponse>> getStudentById(
+            @PathVariable UUID id, org.springframework.security.core.Authentication auth) {
+        securityAuthorizationService.validateStudentAcademicAccess(auth, id);
         return ResponseEntity.ok(ApiResponse.ok(studentService.getStudentById(id)));
     }
 

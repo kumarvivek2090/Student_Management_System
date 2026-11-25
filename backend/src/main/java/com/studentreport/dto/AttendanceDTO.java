@@ -69,4 +69,58 @@ public class AttendanceDTO {
         private long excusedCount;
         private BigDecimal attendancePercentage;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AttendanceLockStatusDTO {
+        private boolean isSubmitted;
+        private boolean isLocked;
+        private String submittedByName;
+        private String submittedByEmail;
+        private java.time.ZonedDateTime submittedAt;
+        private int totalRecords;
+        private int presentCount;
+        private int absentCount;
+        private int lateCount;
+        private int excusedCount;
+        private boolean canEdit;
+        private String message;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AttendanceCorrectionRequest {
+        @NotNull(message = "Class ID is required")
+        private UUID classId;
+        @NotNull(message = "Section ID is required")
+        private UUID sectionId;
+        private UUID subjectId;
+        @NotNull(message = "Attendance date is required")
+        private LocalDate attendanceDate;
+        @jakarta.validation.constraints.NotBlank(message = "Mandatory justification reason required for administrative correction")
+        private String reason;
+        @NotNull(message = "Corrections list cannot be null")
+        private List<AttendanceEntry> corrections;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ClassAttendanceOverviewDTO {
+        private UUID classId;
+        private String className;
+        private UUID sectionId;
+        private String sectionName;
+        private LocalDate date;
+        private boolean isSubmitted;
+        private String submittedByName;
+        private java.time.ZonedDateTime submittedAt;
+        private int studentCount;
+        private int presentCount;
+        private int absentCount;
+    }
 }
