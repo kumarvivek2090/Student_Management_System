@@ -48,7 +48,7 @@ const StudentDashboard = () => {
       const yId = data.academicYearId || '';
       const sId = data.semesterId || '';
       const response = await api.get(
-        `/reports/student/${data.studentId}/pdf?academicYearId=${yId}&semesterId=${sId}`,
+        `/reports/my-report/pdf?academicYearId=${yId}&semesterId=${sId}`,
         { responseType: 'blob' }
       );
       const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
