@@ -10,14 +10,24 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
+    // If no token exists in localStorage, skip the network call and avoid unnecessary 401 logs
+    const token = typeof window !== 'undefined' ? localStorage.getItem('student_report_auth_token') : null;
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await api.get('/auth/me');
       if (response.data && response.data.success) {
         setUser(response.data.data);
       } else {
+        setAuthToken(null);
         setUser(null);
       }
     } catch (err) {
+      setAuthToken(null);
       setUser(null);
     } finally {
       setLoading(false);
