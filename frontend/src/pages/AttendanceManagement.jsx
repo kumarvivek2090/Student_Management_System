@@ -225,14 +225,14 @@ const AttendanceManagement = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#242820] font-serif">Daily Attendance Register</h2>
-          <p className="text-xs text-[#555B50] mt-0.5">
+          <h2 className="text-xl font-bold text-[#242820] dark:text-white font-serif">Daily Attendance Register</h2>
+          <p className="text-xs text-[#555B50] dark:text-[#CAD6B7] mt-0.5">
             Record and track student daily session attendance with status validation and historical logging.
           </p>
         </div>
 
         {isDirty && (
-          <div className="flex items-center space-x-2 bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-lg text-xs font-medium animate-pulse">
+          <div className="flex items-center space-x-2 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 px-3 py-1.5 rounded-lg text-xs font-medium animate-pulse">
             <span className="w-2 h-2 rounded-full bg-amber-500"></span>
             <span>Unsaved Attendance Changes</span>
           </div>
@@ -240,18 +240,18 @@ const AttendanceManagement = () => {
       </div>
 
       {/* Selectors Card */}
-      <div className="card-premium p-5 bg-[#F8F7F2] border border-[#E3E1D6]">
+      <div className="card-premium p-5 bg-[#F8F7F2] dark:bg-[#131A12] border border-[#E3E1D6] dark:border-[#283623]">
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-end">
           
           {/* Class */}
           <div className="sm:col-span-3">
-            <label className="block text-xs font-bold text-[#242820] mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] mb-1.5 uppercase tracking-wider">
               Class
             </label>
             <select
               value={selectedClass}
               onChange={(e) => handleClassChange(e.target.value)}
-              className="w-full bg-white border border-[#E3E1D6] rounded-xl px-3 py-2.5 text-xs text-[#242820] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none"
+              className="w-full bg-white dark:bg-[#182216] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl px-3 py-2.5 text-xs text-[#242820] dark:text-[#F3F6F0] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none"
             >
               <option value="">Select Class</option>
               {classes.map((c) => (
@@ -262,14 +262,14 @@ const AttendanceManagement = () => {
 
           {/* Section */}
           <div className="sm:col-span-3">
-            <label className="block text-xs font-bold text-[#242820] mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] mb-1.5 uppercase tracking-wider">
               Section
             </label>
             <select
               value={selectedSection}
               onChange={(e) => handleSectionChange(e.target.value)}
               disabled={!selectedClass}
-              className="w-full bg-white border border-[#E3E1D6] rounded-xl px-3 py-2.5 text-xs text-[#242820] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none disabled:bg-[#F0EFE6] disabled:text-[#74796D]"
+              className="w-full bg-white dark:bg-[#182216] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl px-3 py-2.5 text-xs text-[#242820] dark:text-[#F3F6F0] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none disabled:bg-[#F0EFE6] dark:disabled:bg-[#0E140D] disabled:text-[#74796D] dark:disabled:text-[#616C5A]"
             >
               <option value="">Select Section</option>
               {sections.map((s) => (
@@ -280,7 +280,7 @@ const AttendanceManagement = () => {
 
           {/* Attendance Date */}
           <div className="sm:col-span-3">
-            <label className="block text-xs font-bold text-[#242820] mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] mb-1.5 uppercase tracking-wider">
               Attendance Date
             </label>
             <div className="relative">
@@ -288,7 +288,7 @@ const AttendanceManagement = () => {
                 type="date"
                 value={attendanceDate}
                 onChange={(e) => handleDateChange(e.target.value)}
-                className="w-full bg-white border border-[#E3E1D6] rounded-xl px-3 py-2.5 text-xs text-[#242820] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none"
+                className="w-full bg-white dark:bg-[#182216] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl px-3 py-2.5 text-xs text-[#242820] dark:text-[#F3F6F0] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none"
               />
             </div>
           </div>
@@ -301,7 +301,7 @@ const AttendanceManagement = () => {
               className={`flex-1 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-colors cursor-pointer ${
                 attendanceDate === new Date().toISOString().split('T')[0]
                   ? 'bg-[#52613B] text-white border-[#52613B]'
-                  : 'bg-white hover:bg-[#F0EFE6] text-[#242820] border-[#E3E1D6]'
+                  : 'bg-white dark:bg-[#182216] hover:bg-[#F0EFE6] dark:hover:bg-[#222E1E] text-[#242820] dark:text-[#E8EDE4] border-[#E3E1D6] dark:border-[#2D3D27]'
               }`}
             >
               Today
@@ -309,7 +309,7 @@ const AttendanceManagement = () => {
             <button
               type="button"
               onClick={() => setQuickDate(-1)}
-              className="flex-1 py-2.5 px-3 rounded-xl bg-white hover:bg-[#F0EFE6] border border-[#E3E1D6] text-[#242820] text-xs font-semibold transition-colors cursor-pointer"
+              className="flex-1 py-2.5 px-3 rounded-xl bg-white dark:bg-[#182216] hover:bg-[#F0EFE6] dark:hover:bg-[#222E1E] border border-[#E3E1D6] dark:border-[#2D3D27] text-[#242820] dark:text-[#E8EDE4] text-xs font-semibold transition-colors cursor-pointer"
             >
               Yesterday
             </button>

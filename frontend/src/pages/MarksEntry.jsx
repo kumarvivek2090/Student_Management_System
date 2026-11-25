@@ -437,14 +437,14 @@ const MarksEntry = () => {
       {/* Page Title & Status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#242820] font-serif">Assessment Marks Entry</h2>
-          <p className="text-xs text-[#555B50] mt-0.5">
+          <h2 className="text-xl font-bold text-[#242820] dark:text-white font-serif">Assessment Marks Entry</h2>
+          <p className="text-xs text-[#555B50] dark:text-[#CAD6B7] mt-0.5">
             Direct database entry with live percentage calculation, grading scale resolution, and validation.
           </p>
         </div>
 
         {isDirty && (
-          <div className="flex items-center space-x-2 bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1.5 rounded-lg text-xs font-medium animate-pulse">
+          <div className="flex items-center space-x-2 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 px-3 py-1.5 rounded-lg text-xs font-medium animate-pulse">
             <span className="w-2 h-2 rounded-full bg-amber-500"></span>
             <span>Unsaved Changes Detected</span>
           </div>
@@ -452,18 +452,18 @@ const MarksEntry = () => {
       </div>
 
       {/* Selectors & Filters Card */}
-      <div className="card-premium p-5 bg-[#F8F7F2] border border-[#E3E1D6]">
+      <div className="card-premium p-5 bg-[#F8F7F2] dark:bg-[#131A12] border border-[#E3E1D6] dark:border-[#283623]">
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-end">
           
           {/* Class Selector */}
           <div className="sm:col-span-3">
-            <label className="block text-xs font-bold text-[#242820] mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] mb-1.5 uppercase tracking-wider">
               1. Class
             </label>
             <select
               value={selectedClass}
               onChange={(e) => handleClassChange(e.target.value)}
-              className="w-full bg-white border border-[#E3E1D6] rounded-xl px-3 py-2.5 text-xs text-[#242820] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none"
+              className="w-full bg-white dark:bg-[#182216] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl px-3 py-2.5 text-xs text-[#242820] dark:text-[#F3F6F0] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none"
             >
               <option value="">Select Class</option>
               {classes.map((c) => (
@@ -474,14 +474,14 @@ const MarksEntry = () => {
 
           {/* Section Selector */}
           <div className="sm:col-span-3">
-            <label className="block text-xs font-bold text-[#242820] mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] mb-1.5 uppercase tracking-wider">
               2. Section
             </label>
             <select
               value={selectedSection}
               onChange={(e) => handleSectionChange(e.target.value)}
               disabled={!selectedClass}
-              className="w-full bg-white border border-[#E3E1D6] rounded-xl px-3 py-2.5 text-xs text-[#242820] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none disabled:bg-[#F0EFE6] disabled:text-[#74796D]"
+              className="w-full bg-white dark:bg-[#182216] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl px-3 py-2.5 text-xs text-[#242820] dark:text-[#F3F6F0] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none disabled:bg-[#F0EFE6] dark:disabled:bg-[#0E140D] disabled:text-[#74796D] dark:disabled:text-[#616C5A]"
             >
               <option value="">Select Section</option>
               {sections.map((s) => (
@@ -492,14 +492,14 @@ const MarksEntry = () => {
 
           {/* Assessment Target Selector */}
           <div className="sm:col-span-4">
-            <label className="block text-xs font-bold text-[#242820] mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] mb-1.5 uppercase tracking-wider">
               3. Assessment Target
             </label>
             <select
               value={selectedAssessment}
               onChange={(e) => handleAssessmentChange(e.target.value)}
               disabled={!selectedSection || assessments.length === 0}
-              className="w-full bg-white border border-[#E3E1D6] rounded-xl px-3 py-2.5 text-xs text-[#242820] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none disabled:bg-[#F0EFE6] disabled:text-[#74796D]"
+              className="w-full bg-white dark:bg-[#182216] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl px-3 py-2.5 text-xs text-[#242820] dark:text-[#F3F6F0] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none disabled:bg-[#F0EFE6] dark:disabled:bg-[#0E140D] disabled:text-[#74796D] dark:disabled:text-[#616C5A]"
             >
               <option value="">
                 {assessments.length === 0 ? 'No assessments found' : 'Select Assessment'}
@@ -518,7 +518,7 @@ const MarksEntry = () => {
               type="button"
               onClick={() => setShowCreateModal(true)}
               disabled={!selectedClass || !selectedSection}
-              className="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-[#F0EFE6] border border-[#E3E1D6] text-[#52613B] text-xs font-semibold flex items-center justify-center space-x-1.5 shadow-xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-2.5 px-3 rounded-xl bg-white dark:bg-[#182216] hover:bg-[#F0EFE6] dark:hover:bg-[#222E1E] border border-[#E3E1D6] dark:border-[#2D3D27] text-[#52613B] dark:text-[#B2D297] text-xs font-semibold flex items-center justify-center space-x-1.5 shadow-xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               title="Create new assessment for this class"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -530,8 +530,8 @@ const MarksEntry = () => {
 
         {/* Available Assessments Pills (1-Click Switcher) */}
         {assessments.length > 0 && (
-          <div className="mt-4 pt-4 border-t border-[#E3E1D6]">
-            <span className="text-[11px] font-semibold text-[#555B50] block mb-2">
+          <div className="mt-4 pt-4 border-t border-[#E3E1D6] dark:border-[#283623]">
+            <span className="text-[11px] font-semibold text-[#555B50] dark:text-[#CAD6B7] block mb-2">
               Available Assessments in Section:
             </span>
             <div className="flex flex-wrap gap-2">

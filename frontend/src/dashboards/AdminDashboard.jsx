@@ -94,16 +94,16 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-8">
       {/* 1. TOP HEADER BANNER */}
-      <div className="card-premium p-6 bg-gradient-to-r from-cream/90 via-white to-ivory flex flex-col md:flex-row md:items-center justify-between gap-4 border border-[#E3E1D6]">
+      <div className="card-premium p-6 bg-gradient-to-r from-cream/90 via-white to-ivory dark:from-[#1A2417] dark:via-[#182216] dark:to-[#141B12] flex flex-col md:flex-row md:items-center justify-between gap-4 border border-[#E3E1D6] dark:border-[#283623]">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#293526] bg-[#E4EAD9] px-2.5 py-0.5 rounded-full border border-[#CAD6B7]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#293526] dark:text-[#C5E8A8] bg-[#E4EAD9] dark:bg-[#23311E] px-2.5 py-0.5 rounded-full border border-[#CAD6B7] dark:border-[#384E30]">
               Enterprise Academic Management
             </span>
-            <span className="text-xs text-[#555B50] font-semibold">Active Session: 2026-2027 Fall</span>
+            <span className="text-xs text-[#555B50] dark:text-[#CAD6B7] font-semibold">Active Session: 2026-2027 Fall</span>
           </div>
-          <h2 className="text-xl font-bold text-[#242820] mt-1.5 tracking-tight">Institutional Executive Command Center</h2>
-          <p className="text-xs text-[#555B50] font-medium mt-0.5">
+          <h2 className="text-xl font-bold text-[#242820] dark:text-white mt-1.5 tracking-tight">Institutional Executive Command Center</h2>
+          <p className="text-xs text-[#555B50] dark:text-[#B5BFAB] font-medium mt-0.5">
             Real-time telemetry and student academic performance powered by Neon Cloud Serverless PostgreSQL.
           </p>
         </div>

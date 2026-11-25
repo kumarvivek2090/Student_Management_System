@@ -12,8 +12,12 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
+  .dark {
+    color-scheme: dark;
+  }
+
   .dark body {
-    background-color: #121811;
+    background-color: #111710;
     color: #E8EDE4;
   }
 
@@ -26,34 +30,193 @@
     background: #F0EFE6;
   }
   .dark ::-webkit-scrollbar-track {
-    background: #1A2217;
+    background: #141B12;
   }
   ::-webkit-scrollbar-thumb {
     background: #CAD6B7;
     border-radius: 9999px;
   }
   .dark ::-webkit-scrollbar-thumb {
-    background: #3F4D2D;
+    background: #2D3D27;
   }
   ::-webkit-scrollbar-thumb:hover {
     background: #52613B;
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: #415538;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-[#52613B] hover:bg-[#3F4D2D] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#52613B] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-[#52613B] hover:bg-[#3F4D2D] dark:bg-[#52613B] dark:hover:bg-[#43512F] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#52613B] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-4 py-2.5 border border-[#E3E1D6] dark:border-[#2F3C21] rounded-lg shadow-sm text-sm font-semibold text-[#242820] dark:text-[#E8EDE4] bg-white dark:bg-[#1D251A] hover:bg-[#F0EFE6] dark:hover:bg-[#242E20] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-olive-300 transition-colors duration-150;
+    @apply inline-flex items-center justify-center px-4 py-2.5 border border-[#E3E1D6] dark:border-[#2D3D27] rounded-lg shadow-sm text-sm font-semibold text-[#242820] dark:text-[#E8EDE4] bg-white dark:bg-[#182216] hover:bg-[#F0EFE6] dark:hover:bg-[#222E1E] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-olive-300 transition-colors duration-150;
   }
 
   .card-premium {
-    @apply bg-white dark:bg-[#1D251A] rounded-xl border border-[#E3E1D6] dark:border-[#2F3C21] shadow-subtle hover:shadow-card transition-all duration-200;
+    @apply bg-white dark:bg-[#182216] rounded-xl border border-[#E3E1D6] dark:border-[#283623] shadow-subtle hover:shadow-card transition-all duration-200;
   }
 
   .input-field {
-    @apply block w-full px-3.5 py-2.5 rounded-lg border border-[#E3E1D6] dark:border-[#2F3C21] bg-white dark:bg-[#151B13] text-[#242820] dark:text-[#E8EDE4] placeholder-[#74796D] focus:outline-none focus:ring-2 focus:ring-[#52613B]/30 focus:border-[#52613B] text-sm transition-colors;
+    @apply block w-full px-3.5 py-2.5 rounded-lg border border-[#E3E1D6] dark:border-[#2D3D27] bg-white dark:bg-[#131A12] text-[#242820] dark:text-[#F3F6F0] placeholder-[#74796D] dark:placeholder-[#7D8973] focus:outline-none focus:ring-2 focus:ring-[#52613B]/30 focus:border-[#52613B] text-sm transition-colors;
   }
+}
+
+/* ==========================================================================
+   GLOBAL DARK THEME HARMONIZATION SYSTEM
+   Enforces cohesive contrast across all pages, cards, tables, inputs & text
+   ========================================================================== */
+
+/* 1. Global Cards and Surfaces */
+.dark .card-premium,
+.dark .bg-white:not(button):not(.keep-white) {
+  background-color: #182216 !important;
+}
+
+.dark .bg-\[\#F8F7F2\],
+.dark .bg-ivory,
+.dark .bg-cream,
+.dark .bg-\[\#F0EFE6\] {
+  background-color: #131A12 !important;
+}
+
+.dark [class*="bg-cream/"],
+.dark [class*="bg-ivory/"] {
+  background-color: #172115 !important;
+}
+
+/* 2. Global Text Colors */
+.dark .text-charcoal,
+.dark .text-forest,
+.dark .text-\[\#242820\],
+.dark .text-\[\#252B25\],
+.dark .text-\[\#293526\],
+.dark .text-gray-900,
+.dark .text-gray-800 {
+  color: #F3F6F0 !important;
+}
+
+.dark .text-muted,
+.dark .text-\[\#555B50\],
+.dark .text-\[\#74796D\],
+.dark .text-\[\#687166\],
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  color: #B5BFAB !important;
+}
+
+.dark .text-olive-700,
+.dark .text-olive-800,
+.dark .text-olive-900 {
+  color: #B2D297 !important;
+}
+
+.dark .text-olive-600 {
+  color: #9EC780 !important;
+}
+
+/* 3. Global Borders and Separators */
+.dark .border-warmgrey,
+.dark .border-border,
+.dark .border-\[\#E3E1D6\],
+.dark .border-\[\#E7E5DA\],
+.dark .border-\[\#F0EFE6\],
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: #283623 !important;
+}
+
+.dark [class*="border-warmgrey/"],
+.dark [class*="border-[#E3E1D6]/"],
+.dark [class*="border-[#E7E5DA]/"] {
+  border-color: #283623 !important;
+}
+
+.dark [class*="divide-warmgrey"] > :not([hidden]) ~ :not([hidden]),
+.dark [class*="divide-[#E3E1D6]"] > :not([hidden]) ~ :not([hidden]),
+.dark [class*="divide-[#F0EFE6]"] > :not([hidden]) ~ :not([hidden]),
+.dark .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: #283623 !important;
+}
+
+/* 4. Form Controls, Inputs, and Native Selects */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+.dark select,
+.dark textarea {
+  background-color: #131A12 !important;
+  color: #F3F6F0 !important;
+  border-color: #2D3D27 !important;
+}
+
+.dark select option {
+  background-color: #182216 !important;
+  color: #F3F6F0 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #7D8973 !important;
+}
+
+.dark select:disabled,
+.dark input:disabled {
+  background-color: #0E140D !important;
+  color: #616C5A !important;
+  border-color: #202A1C !important;
+}
+
+/* 5. Interactive Hover States */
+.dark .hover\:bg-cream:hover,
+.dark .hover\:bg-\[\#F0EFE6\]:hover,
+.dark .hover\:bg-\[\#F8F7F2\]:hover,
+.dark [class*="hover:bg-ivory"]:hover {
+  background-color: #222E1E !important;
+}
+
+/* 6. Data Tables */
+.dark table thead,
+.dark table thead tr,
+.dark table thead th {
+  background-color: #131A12 !important;
+  color: #CAD6B7 !important;
+  border-color: #283623 !important;
+}
+
+.dark table tbody,
+.dark table tbody tr,
+.dark table tbody td {
+  background-color: #182216;
+  color: #E8EDE4;
+  border-color: #283623 !important;
+}
+
+.dark table tbody tr:hover,
+.dark table tbody tr:hover td {
+  background-color: #212C1D !important;
+}
+
+/* 7. Recharts Dark Mode Optimization */
+.dark .recharts-cartesian-grid line {
+  stroke: #24301F !important;
+}
+.dark .recharts-text {
+  fill: #A8B49E !important;
+}
+.dark .recharts-default-tooltip {
+  background-color: #182216 !important;
+  border-color: #2D3D27 !important;
+  color: #F3F6F0 !important;
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 8. Modals & Popovers */
+.dark .modal-content,
+.dark [role="dialog"] {
+  background-color: #182216 !important;
+  border-color: #283623 !important;
+  color: #E8EDE4 !important;
 }

@@ -47,11 +47,16 @@ export default {
           900: '#1D251A',
         },
         dark: {
-          bg: '#293526',
-          heading: '#FFFFFF',
-          body: '#E2E8D8',
-          secondary: '#C0C9B2',
-          accent: '#D2B66F',
+          bg: '#111710',
+          page: '#111710',
+          card: '#182216',
+          subtle: '#131A12',
+          border: '#283623',
+          heading: '#F3F6F0',
+          body: '#CAD6B7',
+          secondary: '#A8B49E',
+          muted: '#85917B',
+          accent: '#B2D297',
         }
       },
       fontFamily: {

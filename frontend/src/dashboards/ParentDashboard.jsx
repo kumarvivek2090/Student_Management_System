@@ -82,17 +82,17 @@ const ParentDashboard = () => {
   return (
     <div className="space-y-8">
       {/* 1. HEADER */}
-      <div className="card-premium p-6 bg-gradient-to-r from-cream/70 to-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="card-premium p-6 bg-gradient-to-r from-cream/70 to-white dark:from-[#1A2417] dark:to-[#182216] border border-[#E3E1D6] dark:border-[#283623] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-olive-800 bg-olive-100 px-2 py-0.5 rounded-full">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-olive-800 dark:text-[#BCE39C] bg-olive-100 dark:bg-[#23311E] px-2 py-0.5 rounded-full">
               Guardian Portal
             </span>
-            <span className="text-xs text-muted">Authorized Family Access</span>
+            <span className="text-xs text-muted dark:text-[#CAD6B7]">Authorized Family Access</span>
           </div>
-          <h2 className="text-xl font-bold text-forest mt-1.5">Family Academic Overview</h2>
-          <p className="text-xs text-muted">
-            Welcome, <span className="font-semibold text-charcoal">{data?.parentFullName || user?.fullName}</span>. Track academic trajectories and access certified term report cards.
+          <h2 className="text-xl font-bold text-forest dark:text-white mt-1.5">Family Academic Overview</h2>
+          <p className="text-xs text-muted dark:text-[#B5BFAB]">
+            Welcome, <span className="font-semibold text-charcoal dark:text-white">{data?.parentFullName || user?.fullName}</span>. Track academic trajectories and access certified term report cards.
           </p>
         </div>
       </div>
