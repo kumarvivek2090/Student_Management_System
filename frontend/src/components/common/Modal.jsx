@@ -1,21 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }) => {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+  useEffect(() => {
+    setMounted(true);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/65 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-black/75 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
         <div
-          className={`relative w-full ${maxWidth} bg-white dark:bg-[#182216] rounded-2xl shadow-elevated border border-warmgrey dark:border-[#283623] overflow-hidden transform transition-all text-[#242820] dark:text-[#E8EDE4]`}
+          className={`relative w-full ${maxWidth} my-8 bg-white dark:bg-[#182216] rounded-2xl shadow-2xl border border-warmgrey dark:border-[#283623] overflow-hidden transform transition-all text-left text-[#242820] dark:text-[#E8EDE4] z-10`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -30,10 +45,11 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }) => {
           </div>
 
           {/* Body */}
-          <div className="p-6 max-h-[80vh] overflow-y-auto">{children}</div>
+          <div className="p-6 max-h-[85vh] overflow-y-auto">{children}</div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
