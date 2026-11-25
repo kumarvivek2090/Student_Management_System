@@ -45,5 +45,15 @@ public class AuthDTO {
         private User.Role role;
         private String avatarUrl;
         private UUID roleEntityId; // studentId or teacherId or parentId if applicable
+        private String status;
+        private String identifier;
+        private String designation;
+        private String department;
+        private String classSection;
+        private String rollNumber;
+        private String childrenSummary;
+        private String lastLoginAt;
+        private String academicYear;
+        private String institutionName;
     }
 }

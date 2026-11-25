@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Search, Menu, Calendar, Check, ExternalLink, X, User } from 'lucide-react';
 import api from '../utils/api';
+import ProfilePopover from './common/ProfilePopover';
 
 const Navbar = ({ title, subtitle, onMenuClick }) => {
   const { user, logout } = useAuth();
@@ -169,15 +170,9 @@ const Navbar = ({ title, subtitle, onMenuClick }) => {
             )}
           </div>
 
-          {/* User Profile Pill */}
-          <div className="flex items-center space-x-2.5 pl-2 border-l border-[#E3E1D6]">
-            <div className="w-8 h-8 rounded-full bg-[#E4EAD9] border border-[#CAD6B7] text-[#293526] flex items-center justify-center font-bold text-xs shadow-sm">
-              {user?.fullName?.charAt(0) || 'U'}
-            </div>
-            <div className="hidden lg:block text-left">
-              <p className="text-xs font-bold text-[#242820] leading-tight">{user?.fullName}</p>
-              <p className="text-[10px] text-[#555B50] font-semibold uppercase tracking-wider">{user?.role}</p>
-            </div>
+          {/* User Profile Pill with Interactive Popover */}
+          <div className="pl-2 border-l border-[#E3E1D6]">
+            <ProfilePopover position="header" />
           </div>
         </div>
       </header>

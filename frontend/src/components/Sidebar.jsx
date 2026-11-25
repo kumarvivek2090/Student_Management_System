@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ProfilePopover from './common/ProfilePopover';
 import {
   LayoutDashboard,
   GraduationCap,
@@ -208,30 +209,13 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen }) => 
           })}
         </nav>
 
-        {/* User Footer */}
-        <div className="p-3 border-t border-[#2F3C21] bg-[#151B13]">
-          <div className="flex items-center justify-between">
-            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'} overflow-hidden`}>
-              <div className="w-8 h-8 rounded-full bg-[#52613B] border border-[#7B8F5E] flex items-center justify-center font-bold text-xs text-white uppercase shrink-0 shadow-sm">
-                {user?.fullName?.charAt(0) || 'U'}
-              </div>
-              {!isCollapsed && (
-                <div className="overflow-hidden">
-                  <p className="text-xs font-bold text-white truncate">{user?.fullName || 'User'}</p>
-                  <p className="text-[10px] text-[#CAD6B7] truncate">{user?.email}</p>
-                </div>
-              )}
-            </div>
-            {!isCollapsed && (
-              <button
-                onClick={logout}
-                title="Sign out of system"
-                className="p-1.5 rounded-lg hover:bg-[#2F3C21] text-[#E4EAD9] hover:text-white transition-colors border border-transparent hover:border-[#3F4D2D]"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            )}
-          </div>
+        {/* User Footer with Interactive Profile Popover */}
+        <div className="p-2.5 border-t border-[#2F3C21] bg-[#151B13]">
+          <ProfilePopover
+            position="sidebar"
+            isCollapsed={isCollapsed}
+            className="w-full"
+          />
         </div>
       </aside>
     </>
