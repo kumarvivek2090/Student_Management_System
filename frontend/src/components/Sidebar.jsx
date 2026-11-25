@@ -301,7 +301,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, mobileOpen, setMobileOpen }) => 
         </nav>
 
         {/* User Footer with Interactive Profile Popover */}
-        <div className="p-2.5 border-t border-[#2F3C21] bg-[#151B13] shrink-0">
+        <div className={`border-t border-[#2F3C21] bg-[#141A12] shrink-0 mt-auto ${isCollapsed ? 'p-2.5' : 'p-3'}`}>
           <ProfilePopover
             position="sidebar"
             isCollapsed={isCollapsed}

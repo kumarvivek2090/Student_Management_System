@@ -218,7 +218,13 @@ const ProfilePopover = ({
 
   const handleAccountSettings = () => {
     setIsOpen(false);
-    navigate('/settings');
+    if (user?.role === 'STUDENT') {
+      navigate('/student/profile');
+    } else if (user?.role === 'PARENT') {
+      navigate('/parent/children');
+    } else {
+      navigate('/settings');
+    }
   };
 
   const handleEditProfileSubmit = async (e) => {
@@ -280,7 +286,7 @@ const ProfilePopover = ({
     if (isCollapsed) {
       return 'left-full bottom-0 ml-3 origin-bottom-left';
     }
-    return 'bottom-full left-0 sm:left-1 mb-2.5 origin-bottom-left';
+    return 'bottom-full left-0 sm:left-1 mb-3 origin-bottom-left';
   };
 
   return (
@@ -296,13 +302,15 @@ const ProfilePopover = ({
         onClick={() => setIsOpen((prev) => !prev)}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
-        className="cursor-pointer select-none outline-none focus:ring-2 focus:ring-[#52613B]/40 rounded-xl"
+        className="cursor-pointer select-none outline-none focus:ring-2 focus:ring-[#52613B]/40 rounded-xl w-full"
       >
         {customTrigger ? (
           customTrigger
         ) : position === 'header' ? (
-          <div className="flex items-center space-x-2.5 py-1 px-2 rounded-xl hover:bg-[#F0EFE6] dark:hover:bg-[#1D251A] transition-colors border border-transparent hover:border-[#E3E1D6] dark:hover:border-[#2F3C21]">
-            <ProfileAvatar user={user} size="sm" showStatus={true} />
+          <div className="flex items-center space-x-2.5 py-1 px-2.5 rounded-xl hover:bg-[#F0EFE6] dark:hover:bg-[#1D251A] transition-colors border border-transparent hover:border-[#E3E1D6] dark:hover:border-[#2F3C21]">
+            <div className="shrink-0 flex items-center justify-center p-0.5">
+              <ProfileAvatar user={user} size="sm" showStatus={true} />
+            </div>
             <div className="hidden lg:block text-left">
               <div className="flex items-center space-x-1.5">
                 <p className="text-xs font-bold text-[#242820] dark:text-white leading-tight truncate max-w-[140px]">
@@ -320,22 +328,40 @@ const ProfilePopover = ({
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-between w-full p-1.5 rounded-xl hover:bg-[#2F3C21] transition-colors">
-            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'} overflow-hidden flex-1`}>
-              <ProfileAvatar user={user} size="sm" showStatus={true} />
+          <div
+            className={`w-full rounded-xl transition-all duration-200 border border-transparent hover:border-[#2F3C21] hover:bg-[#222C1D] active:scale-[0.99] ${
+              isCollapsed
+                ? 'py-2 px-1 flex items-center justify-center'
+                : 'px-2.5 py-2 flex items-center justify-between'
+            }`}
+          >
+            <div
+              className={`flex items-center ${
+                isCollapsed ? 'justify-center w-full' : 'space-x-3 min-w-0 flex-1'
+              } overflow-hidden`}
+            >
+              <div className="shrink-0 flex items-center justify-center p-0.5">
+                <ProfileAvatar user={user} size="sm" showStatus={true} />
+              </div>
               {!isCollapsed && (
                 <div className="overflow-hidden text-left flex-1 min-w-0 pr-1">
-                  <p className="text-xs font-bold text-white truncate">{user?.fullName || 'User'}</p>
-                  <p className="text-[10px] text-[#CAD6B7] truncate">{user?.email}</p>
+                  <p className="text-xs font-bold text-white truncate leading-tight tracking-tight">
+                    {user?.fullName || 'Academic User'}
+                  </p>
+                  <p className="text-[10px] text-[#CAD6B7] truncate leading-tight mt-0.5 font-mono">
+                    {user?.email}
+                  </p>
                 </div>
               )}
             </div>
             {!isCollapsed && (
-              <ChevronDown
-                className={`w-3.5 h-3.5 text-[#CAD6B7] shrink-0 transition-transform duration-200 ${
-                  isOpen ? 'rotate-180 text-white' : ''
-                }`}
-              />
+              <div className="shrink-0 ml-1.5 p-1 rounded-lg text-[#CAD6B7] hover:text-white transition-colors">
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    isOpen ? 'rotate-180 text-white' : ''
+                  }`}
+                />
+              </div>
             )}
           </div>
         )}
@@ -347,9 +373,9 @@ const ProfilePopover = ({
           ref={popoverRef}
           onMouseEnter={cancelClose}
           onMouseLeave={scheduleClose}
-          className={`absolute ${getPopoverPlacement()} w-[340px] sm:w-[380px] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] overflow-hidden z-50 animate-slideDown text-[#242820] dark:text-[#E8EDE4]`}
+          className={`absolute ${getPopoverPlacement()} w-[340px] sm:w-[380px] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-[#1D251A] rounded-2xl shadow-2xl border border-[#E7E5DA] dark:border-[#2F3C21] overflow-hidden z-[100] animate-slideDown text-[#242820] dark:text-[#E8EDE4]`}
           style={{
-            boxShadow: '0 20px 35px -5px rgba(36, 40, 32, 0.15), 0 10px 15px -5px rgba(36, 40, 32, 0.08)'
+            boxShadow: '0 20px 35px -5px rgba(36, 40, 32, 0.25), 0 10px 15px -5px rgba(36, 40, 32, 0.12)'
           }}
         >
           {/* 1. PROFILE HEADER BANNER */}
@@ -360,17 +386,19 @@ const ProfilePopover = ({
                 <Building2 className="w-3.5 h-3.5 text-[#CAD6B7]" />
                 <span>Oakridge Academy</span>
               </div>
-              <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${meta.badgeClass}`}>
+              <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold border ${meta.badgeClass}`}>
                 {meta.badgeText}
               </span>
             </div>
 
             {/* Avatar & Core Identity */}
             <div className="flex items-start space-x-3.5">
-              <ProfileAvatar user={user} size="lg" showStatus={true} ring={true} />
+              <div className="shrink-0 flex items-center justify-center p-0.5">
+                <ProfileAvatar user={user} size="lg" showStatus={true} />
+              </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-bold text-white tracking-tight leading-snug truncate">
+                <div className="flex items-center justify-between gap-1">
+                  <h3 className="text-base font-bold text-white tracking-tight leading-snug break-words">
                     {user?.fullName || 'Academic User'}
                   </h3>
                   <button
@@ -378,20 +406,29 @@ const ProfilePopover = ({
                       setIsOpen(false);
                       setShowEditProfileModal(true);
                     }}
-                    className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#CAD6B7] hover:text-white transition-colors"
+                    className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#CAD6B7] hover:text-white transition-colors shrink-0"
                     title="Edit Profile"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <p className="text-xs text-[#E4EAD9] font-medium leading-tight mt-0.5">
+
+                {/* Designation: FULLY DISPLAYED, NEVER TRUNCATED */}
+                <p className="text-xs text-[#E4EAD9] font-medium leading-snug mt-1 break-words">
                   {meta.title}
                 </p>
 
+                {/* Official Role */}
+                <div className="flex items-center space-x-2 mt-1">
+                  <span className="text-[10px] text-[#CAD6B7] uppercase font-bold tracking-wider">
+                    Role: {user?.role || 'Administrator'}
+                  </span>
+                </div>
+
                 {/* Email with copy button */}
-                <div className="flex items-center space-x-1.5 mt-2 bg-black/20 hover:bg-black/30 transition-colors px-2.5 py-1 rounded-lg w-fit max-w-full">
+                <div className="flex items-center space-x-1.5 mt-2.5 bg-black/25 hover:bg-black/35 transition-colors px-2.5 py-1 rounded-lg w-fit max-w-full">
                   <Mail className="w-3 h-3 text-[#CAD6B7] shrink-0" />
-                  <span className="text-[11px] text-[#CAD6B7] truncate">{user?.email}</span>
+                  <span className="text-[11px] text-[#CAD6B7] truncate select-all font-mono">{user?.email}</span>
                   <button
                     onClick={handleCopyEmail}
                     title="Copy registered email"
@@ -462,7 +499,7 @@ const ProfilePopover = ({
                     <User className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <span className="block font-bold">View Full Profile</span>
+                    <span className="block font-bold">View Profile</span>
                     <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
                       Identity & academic records
                     </span>
@@ -471,7 +508,7 @@ const ProfilePopover = ({
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 2. Edit Profile & Phone */}
+              {/* 2. Edit Profile */}
               <button
                 onClick={() => {
                   setIsOpen(false);
@@ -484,38 +521,35 @@ const ProfilePopover = ({
                     <Edit3 className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <span className="block font-bold">Edit Profile Details</span>
+                    <span className="block font-bold">Edit Profile</span>
                     <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
-                      Name & registered phone
+                      Display name & contact phone
                     </span>
                   </div>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 3. Security & Login History */}
+              {/* 3. Account Settings */}
               <button
-                onClick={() => {
-                  setIsOpen(false);
-                  setShowSecurityModal(true);
-                }}
+                onClick={handleAccountSettings}
                 className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
               >
                 <div className="flex items-center space-x-2.5">
                   <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
-                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <Settings className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <span className="block font-bold">Security & Login History</span>
+                    <span className="block font-bold">Account Settings</span>
                     <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
-                      Active sessions & audit trail
+                      System & institutional preferences
                     </span>
                   </div>
                 </div>
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 4. Change Password */}
+              {/* 4. Security Settings */}
               <button
                 onClick={() => {
                   setIsOpen(false);
@@ -528,7 +562,7 @@ const ProfilePopover = ({
                     <KeyRound className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <span className="block font-bold">Change Password</span>
+                    <span className="block font-bold">Security Settings</span>
                     <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
                       Update security credentials
                     </span>
@@ -537,7 +571,29 @@ const ProfilePopover = ({
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 5. Notification Preferences */}
+              {/* 5. Login History */}
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setShowSecurityModal(true);
+                }}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[#242820] dark:text-[#E8EDE4] hover:bg-[#F8F7F2] dark:hover:bg-[#242E20] hover:text-[#52613B] transition-colors group text-left"
+              >
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-[#F0EFE6] dark:bg-[#151B13] group-hover:bg-[#E4EAD9] flex items-center justify-center text-[#52613B] dark:text-[#CAD6B7] transition-colors">
+                    <History className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <span className="block font-bold">Login History</span>
+                    <span className="block text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-normal">
+                      Active sessions & audit trail
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
+              </button>
+
+              {/* 6. Notification Preferences */}
               <button
                 onClick={() => {
                   setIsOpen(false);
@@ -559,7 +615,7 @@ const ProfilePopover = ({
                 <ChevronRight className="w-3.5 h-3.5 text-[#CAD6B7] group-hover:text-[#52613B] transition-colors" />
               </button>
 
-              {/* 6. Help & Support */}
+              {/* 7. Help & Support */}
               <button
                 onClick={() => {
                   setIsOpen(false);
