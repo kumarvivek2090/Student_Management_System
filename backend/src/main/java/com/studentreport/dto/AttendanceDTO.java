@@ -1,5 +1,6 @@
 package com.studentreport.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.studentreport.entity.AttendanceRecord;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -75,7 +76,9 @@ public class AttendanceDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AttendanceLockStatusDTO {
+        @JsonProperty("isSubmitted")
         private boolean isSubmitted;
+        @JsonProperty("isLocked")
         private boolean isLocked;
         private String submittedByName;
         private String submittedByEmail;
@@ -116,6 +119,7 @@ public class AttendanceDTO {
         private UUID sectionId;
         private String sectionName;
         private LocalDate date;
+        @JsonProperty("isSubmitted")
         private boolean isSubmitted;
         private String submittedByName;
         private java.time.ZonedDateTime submittedAt;

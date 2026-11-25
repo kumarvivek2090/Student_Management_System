@@ -103,7 +103,12 @@ const AttendanceManagement = () => {
 
       const students = sRes.data?.data || [];
       const attendanceList = aRes.data?.data || [];
-      const lockData = statusRes?.data?.data || null;
+      const rawLockData = statusRes?.data?.data || null;
+      const lockData = rawLockData ? {
+        ...rawLockData,
+        isLocked: rawLockData.isLocked ?? rawLockData.locked ?? false,
+        isSubmitted: rawLockData.isSubmitted ?? rawLockData.submitted ?? false,
+      } : null;
 
       setLockStatus(lockData);
 
@@ -138,7 +143,11 @@ const AttendanceManagement = () => {
     setLoadingOverview(true);
     try {
       const res = await api.get('/attendance/admin/overview', { params: { date } });
-      setOverviewData(res.data?.data || []);
+      const rows = (res.data?.data || []).map((r) => ({
+        ...r,
+        isSubmitted: r.isSubmitted ?? r.submitted ?? false,
+      }));
+      setOverviewData(rows);
     } catch (e) {
       toast.error('Could not load administrative attendance overview');
     } finally {
