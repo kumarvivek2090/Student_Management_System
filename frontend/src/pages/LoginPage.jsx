@@ -49,6 +49,14 @@ const LoginPage = () => {
     } else if (roleParam === 'parent') {
       setEmail('robert.miller@studentreport.com');
       setPassword('Password@123');
+    } else {
+      // Check for saved credentials from "Remember Me"
+      const savedEmail = localStorage.getItem('oakridge_saved_email');
+      const savedRemember = localStorage.getItem('oakridge_remember_me') === 'true';
+      if (savedRemember && savedEmail) {
+        setEmail(savedEmail);
+        setRememberMe(true);
+      }
     }
   }, [location.search]);
 
@@ -78,6 +86,14 @@ const LoginPage = () => {
       setLoading(false);
 
       if (result.success) {
+        if (rememberMe) {
+          localStorage.setItem('oakridge_saved_email', email.trim());
+          localStorage.setItem('oakridge_remember_me', 'true');
+        } else {
+          localStorage.removeItem('oakridge_saved_email');
+          localStorage.removeItem('oakridge_remember_me');
+        }
+
         const role = result.user?.role;
         if (role === 'ADMIN') navigate('/admin/dashboard');
         else if (role === 'TEACHER') navigate('/teacher/dashboard');
@@ -109,7 +125,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F7F2] flex flex-col justify-center lg:px-0">
+    <div className="min-h-screen bg-[#F8F7F2] dark:bg-[#111710] flex flex-col justify-center lg:px-0 text-[#242820] dark:text-[#E8EDE4]">
       <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen">
         
         {/* ================================================================== */}
@@ -223,43 +239,43 @@ const LoginPage = () => {
         {/* ================================================================== */}
         {/* RIGHT COLUMN: AUTHENTICATION PANEL                                 */}
         {/* ================================================================== */}
-        <div className="lg:col-span-6 flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-12 bg-[#F8F7F2]">
+        <div className="lg:col-span-6 flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-12 bg-[#F8F7F2] dark:bg-[#111710] transition-colors">
           <div className="max-w-md w-full mx-auto">
             
-            {/* Elevated White Card for Form */}
-            <div className="bg-white rounded-2xl border border-[#E3E1D6] p-7 sm:p-9 shadow-card space-y-6">
+            {/* Elevated Card for Form */}
+            <div className="bg-white dark:bg-[#182216] rounded-2xl border border-[#E3E1D6] dark:border-[#283623] p-6 sm:p-9 shadow-card space-y-6 transition-colors">
 
               {/* Header */}
               <div>
                 <div className="lg:hidden w-12 h-12 rounded-xl bg-[#52613B] flex items-center justify-center text-white shadow-card mb-4">
                   <GraduationCap className="w-7 h-7" />
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#242820] tracking-tight font-serif">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#242820] dark:text-[#F3F6F0] tracking-tight font-serif">
                   Welcome Back
                 </h2>
-                <p className="mt-1.5 text-xs sm:text-sm text-[#555B50]">
+                <p className="mt-1.5 text-xs sm:text-sm text-[#555B50] dark:text-[#CAD6B7]">
                   Sign in to access your academic workspace.
                 </p>
               </div>
 
               {/* Error Message Banner */}
               {errorMessage && (
-                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-[#B84040] text-xs flex items-start space-x-2.5 animate-fadeIn">
-                  <AlertCircle className="w-4 h-4 text-[#B84040] mt-0.5 shrink-0" />
+                <div className="p-3.5 rounded-xl bg-red-50 dark:bg-rose-950/40 border border-red-200 dark:border-rose-900/60 text-[#B84040] dark:text-rose-300 text-xs flex items-start space-x-2.5 animate-fadeIn">
+                  <AlertCircle className="w-4 h-4 text-[#B84040] dark:text-rose-400 mt-0.5 shrink-0" />
                   <span className="leading-relaxed font-medium">{errorMessage}</span>
                 </div>
               )}
 
-              {/* Authentication Form */}
-              <form className="space-y-4.5" onSubmit={handleSubmit} noValidate>
+              {/* Authentication Form with Refined Enterprise Spacing & Alignment */}
+              <form onSubmit={handleSubmit} noValidate>
                 
                 {/* Field 1: Institutional Email */}
                 <div>
-                  <label className="block text-xs font-bold text-[#242820] mb-1.5 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] mb-1.5 uppercase tracking-wider">
                     Institutional Email
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-[#555B50] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Mail className="w-4 h-4 text-[#555B50] dark:text-[#8D9686] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="email"
                       required
@@ -268,26 +284,26 @@ const LoginPage = () => {
                       placeholder="e.g. name@studentreport.com"
                       autoComplete="email"
                       disabled={loading}
-                      className="w-full bg-[#FFFFFF] border border-[#E3E1D6] rounded-xl pl-10 pr-3.5 py-3 text-xs text-[#242820] placeholder-[#74796D] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none transition-all"
+                      className="w-full bg-[#FFFFFF] dark:bg-[#121811] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl pl-10 pr-3.5 py-3 text-xs text-[#242820] dark:text-[#E8EDE4] placeholder-[#74796D] dark:placeholder-[#8C9882] focus:border-[#52613B] dark:focus:border-[#BCE39C] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none transition-all"
                     />
                   </div>
                 </div>
 
                 {/* Field 2: Password with Show/Hide toggle */}
-                <div>
+                <div className="mt-4">
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-[#242820] uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-[#242820] dark:text-[#E8EDE4] uppercase tracking-wider">
                       Password
                     </label>
                     <Link
                       to="/forgot-password"
-                      className="text-xs text-[#52613B] hover:text-[#3F4D2D] font-semibold transition-colors"
+                      className="text-xs text-[#52613B] dark:text-[#BCE39C] hover:text-[#3F4D2D] dark:hover:text-white font-semibold transition-colors"
                     >
                       Forgot Password?
                     </Link>
                   </div>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-[#555B50] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Lock className="w-4 h-4 text-[#555B50] dark:text-[#8D9686] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
@@ -296,12 +312,12 @@ const LoginPage = () => {
                       placeholder="Enter your account password"
                       autoComplete="current-password"
                       disabled={loading}
-                      className="w-full bg-[#FFFFFF] border border-[#E3E1D6] rounded-xl pl-10 pr-10 py-3 text-xs text-[#242820] placeholder-[#74796D] focus:border-[#52613B] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none transition-all"
+                      className="w-full bg-[#FFFFFF] dark:bg-[#121811] border border-[#E3E1D6] dark:border-[#2D3D27] rounded-xl pl-10 pr-10 py-3 text-xs text-[#242820] dark:text-[#E8EDE4] placeholder-[#74796D] dark:placeholder-[#8C9882] focus:border-[#52613B] dark:focus:border-[#BCE39C] focus:ring-1 focus:ring-[#52613B] shadow-xs outline-none transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555B50] hover:text-[#242820] cursor-pointer p-0.5 transition-colors"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#555B50] dark:text-[#8D9686] hover:text-[#242820] dark:hover:text-white cursor-pointer p-0.5 transition-colors"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -309,98 +325,107 @@ const LoginPage = () => {
                   </div>
                 </div>
 
-                {/* Remember Me Checkbox */}
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-[#E3E1D6] text-[#52613B] focus:ring-[#52613B] cursor-pointer"
-                  />
-                  <label htmlFor="remember-me" className="ml-2 block text-xs text-[#242820] font-medium cursor-pointer">
-                    Remember me on this browser
+                {/* Spacing: 14-16px vertical gap between password and Remember Me */}
+                {/* Remember Me Checkbox: Aligned neatly to the left, vertically centered */}
+                <div className="mt-4 flex items-center">
+                  <label
+                    htmlFor="remember-me"
+                    className="inline-flex items-center space-x-2.5 cursor-pointer group select-none"
+                  >
+                    <input
+                      id="remember-me"
+                      name="remember-me"
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 rounded border-[#CAD6B7] dark:border-[#3A4E33] text-[#52613B] accent-[#52613B] focus:ring-2 focus:ring-[#52613B]/30 shrink-0 cursor-pointer transition-colors"
+                    />
+                    <span className="text-xs text-[#242820] dark:text-[#E8EDE4] font-medium group-hover:text-[#52613B] dark:group-hover:text-[#BCE39C] transition-colors">
+                      Remember me on this browser
+                    </span>
                   </label>
                 </div>
 
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 px-4 rounded-xl bg-[#52613B] hover:bg-[#3F4D2D] text-white text-sm font-semibold flex items-center justify-center space-x-2 shadow-card hover:shadow-card-hover transition-all cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      <span>Authenticating with Neon Cloud DB...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Sign In to Portal</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+                {/* Spacing: 18-22px vertical gap between Remember Me and Sign In button */}
+                {/* Submit Button: full available form width with comfortable separation */}
+                <div className="mt-5">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3.5 px-4 rounded-xl bg-[#52613B] hover:bg-[#3F4D2D] active:scale-[0.99] text-white text-sm font-semibold flex items-center justify-center space-x-2 shadow-card hover:shadow-card-hover transition-all cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin text-white" />
+                        <span>Authenticating with Neon Cloud DB...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Sign In to Portal</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Spacing: ~24px gap below the Sign In button before security information */}
+                <div className="mt-6 text-center">
+                  <span className="text-xs text-[#74796D] dark:text-[#CAD6B7] block font-normal">
+                    Secure access for authorized institutional users.
+                  </span>
+                </div>
               </form>
 
-              {/* Sub-Form Security Text */}
-              <div className="text-center pt-1">
-                <span className="text-xs text-[#74796D] block">
-                  Secure access for authorized institutional users.
-                </span>
-              </div>
-
-              {/* Development / Evaluator Role Fast-Loader (Clean collapsible drawer) */}
-              <div className="pt-2 border-t border-[#E3E1D6]">
+              {/* Development / Evaluator Role Fast-Loader */}
+              <div className="pt-2 border-t border-[#E3E1D6] dark:border-[#283623]">
                 <button
                   type="button"
                   onClick={() => setShowDemoCredentials(!showDemoCredentials)}
-                  className="w-full flex items-center justify-between py-2 text-[11px] font-semibold text-[#555B50] hover:text-[#242820] cursor-pointer transition-colors"
+                  className="w-full flex items-center justify-between py-2 text-[11px] font-semibold text-[#555B50] dark:text-[#CAD6B7] hover:text-[#242820] dark:hover:text-white cursor-pointer transition-colors"
                 >
                   <span className="flex items-center space-x-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#52613B]" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#52613B] dark:text-[#BCE39C]" />
                     <span>Institutional Evaluation Accounts (Click to test roles)</span>
                   </span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showDemoCredentials ? 'rotate-180' : ''}`} />
                 </button>
 
                 {showDemoCredentials && (
-                  <div className="mt-2.5 grid grid-cols-2 gap-2 p-3 bg-[#F0EFE6] rounded-xl border border-[#E3E1D6] text-[11px] animate-fadeIn">
+                  <div className="mt-2.5 grid grid-cols-2 gap-2 p-3 bg-[#F0EFE6] dark:bg-[#131A12] rounded-xl border border-[#E3E1D6] dark:border-[#283623] text-[11px] animate-fadeIn">
                     <button
                       type="button"
                       onClick={() => setDemoAccount('admin@studentreport.com')}
-                      className="p-2.5 rounded-lg bg-white hover:bg-[#F8F7F2] text-left border border-[#E3E1D6] cursor-pointer transition-colors shadow-xs"
+                      className="p-2.5 rounded-lg bg-white dark:bg-[#182216] hover:bg-[#F8F7F2] dark:hover:bg-[#202C1D] text-left border border-[#E3E1D6] dark:border-[#283623] cursor-pointer transition-colors shadow-xs"
                     >
-                      <span className="font-bold text-[#242820] block">Administrator</span>
-                      <span className="text-[10px] text-[#555B50] font-mono truncate block mt-0.5">admin@studentreport.com</span>
+                      <span className="font-bold text-[#242820] dark:text-white block">Administrator</span>
+                      <span className="text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-mono truncate block mt-0.5">admin@studentreport.com</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setDemoAccount('eleanor.vance@studentreport.com')}
-                      className="p-2.5 rounded-lg bg-white hover:bg-[#F8F7F2] text-left border border-[#E3E1D6] cursor-pointer transition-colors shadow-xs"
+                      className="p-2.5 rounded-lg bg-white dark:bg-[#182216] hover:bg-[#F8F7F2] dark:hover:bg-[#202C1D] text-left border border-[#E3E1D6] dark:border-[#283623] cursor-pointer transition-colors shadow-xs"
                     >
-                      <span className="font-bold text-[#242820] block">Faculty</span>
-                      <span className="text-[10px] text-[#555B50] font-mono truncate block mt-0.5">eleanor.vance@studentreport.com</span>
+                      <span className="font-bold text-[#242820] dark:text-white block">Faculty</span>
+                      <span className="text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-mono truncate block mt-0.5">eleanor.vance@studentreport.com</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setDemoAccount('sophia.miller@studentreport.com')}
-                      className="p-2.5 rounded-lg bg-white hover:bg-[#F8F7F2] text-left border border-[#E3E1D6] cursor-pointer transition-colors shadow-xs"
+                      className="p-2.5 rounded-lg bg-white dark:bg-[#182216] hover:bg-[#F8F7F2] dark:hover:bg-[#202C1D] text-left border border-[#E3E1D6] dark:border-[#283623] cursor-pointer transition-colors shadow-xs"
                     >
-                      <span className="font-bold text-[#242820] block">Student</span>
-                      <span className="text-[10px] text-[#555B50] font-mono truncate block mt-0.5">sophia.miller@studentreport.com</span>
+                      <span className="font-bold text-[#242820] dark:text-white block">Student</span>
+                      <span className="text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-mono truncate block mt-0.5">sophia.miller@studentreport.com</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setDemoAccount('robert.miller@studentreport.com')}
-                      className="p-2.5 rounded-lg bg-white hover:bg-[#F8F7F2] text-left border border-[#E3E1D6] cursor-pointer transition-colors shadow-xs"
+                      className="p-2.5 rounded-lg bg-white dark:bg-[#182216] hover:bg-[#F8F7F2] dark:hover:bg-[#202C1D] text-left border border-[#E3E1D6] dark:border-[#283623] cursor-pointer transition-colors shadow-xs"
                     >
-                      <span className="font-bold text-[#242820] block">Guardian</span>
-                      <span className="text-[10px] text-[#555B50] font-mono truncate block mt-0.5">robert.miller@studentreport.com</span>
+                      <span className="font-bold text-[#242820] dark:text-white block">Guardian</span>
+                      <span className="text-[10px] text-[#555B50] dark:text-[#CAD6B7] font-mono truncate block mt-0.5">robert.miller@studentreport.com</span>
                     </button>
                   </div>
                 )}
@@ -410,7 +435,7 @@ const LoginPage = () => {
               <div className="text-center pt-2">
                 <Link
                   to="/"
-                  className="text-xs font-semibold text-[#52613B] hover:text-[#3F4D2D] inline-flex items-center space-x-1.5 transition-colors"
+                  className="text-xs font-semibold text-[#52613B] dark:text-[#BCE39C] hover:text-[#3F4D2D] dark:hover:text-white inline-flex items-center space-x-1.5 transition-colors"
                 >
                   <span>← Return to Oakridge Academy Homepage</span>
                 </Link>
